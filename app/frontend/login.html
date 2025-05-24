@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - DrPlagiumDoctor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1><a href="index.html">DrPlagiumDoctor</a></h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="check.html">Verificar Plagio</a></li>
+                <li class="current"><a href="login.html">Iniciar Sesión</a></li>
+                <li><a href="#">Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="login-page">
+        <section class="login-form">
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-button">Iniciar Sesión</button>
+                <p class="signup-link">¿No tienes una cuenta? <a href="#">Regístrate aquí</a></p>
+            </form>
+            <div id="loginError" class="error-message" style="display:none;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DrPlagiumDoctor. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

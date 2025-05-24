@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Plagio - DrPlagiumDoctor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1><a href="index.html">DrPlagiumDoctor</a></h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li class="current"><a href="check.html">Verificar Plagio</a></li>
+                <li><a href="login.html">Iniciar Sesión</a></li>
+                <li><a href="#">Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="check-page">
+        <section class="plagiarism-check">
+            <h2>Verificar Plagio</h2>
+            <form id="plagiarismCheckForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="document">Subir Documento (PDF, TXT, DOCX):</label>
+                    <input type="file" id="document" name="document" accept=".pdf,.txt,.docx">
+                </div>
+                <div class="form-group">
+                    <label for="text">O pegar texto directamente:</label>
+                    <textarea id="text" name="text" rows="10" placeholder="Pega tu texto aquí..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Analizar</button>
+            </form>
+            <div id="analysisResults" class="results" style="display:none;">
+                <h3>Resultados del Análisis</h3>
+                <p>Porcentaje de Plagio (Texto): <span id="plagiarismPercentageText"></span>%</p>
+                <div id="plagiarismDetailsText"></div>
+                <p>Porcentaje de Contenido IA: <span id="aiDetectionPercentage"></span>%</p>
+                <div id="aiDetectionDetails"></div>
+                <button id="downloadReport" class="report-button" style="display:none;">Descargar Informe</button>
+            </div>
+            <div id="analysisError" class="error-message" style="display:none;"></div>
+            <div id="loadingIndicator" class="loading" style="display:none;">Analizando...</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DrPlagiumDoctor. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

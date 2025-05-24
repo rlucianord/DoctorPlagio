@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=sqlite:///./Plagio.db
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:123456789$@172.24.0.2:5432/drplagium
+      SECRET_KEY: your_super_secret_key_for_jwt
+      STRIPE_SECRET_KEY: sk_test_your_stripe_secret_key # Reemplaza con tu clave real
+      OLLAMA_BASE_URL: http://172.19.0.2:11434
+    networks:
+      - postgres_postgres-network 
+      
+
+networks:
+  postgres_postgres-network :  # Definición de la red plagium_net
+    external: true
+ 
+    
+# volumes:
+#   db_data:
+#   ollama_data:
