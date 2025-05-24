@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    </div class="chat-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>DeepSeek Chat</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            {% if chat_history %}
+                {% for message in chat_history %}
+                    <div class="message message-{{ 'user' if message.role == 'user' else 'bot' }}">
+                        <div class="message-content">
+                            <div class="avatar avatar-{{ 'user' if message.role == 'user' else 'bot' }}">
+                                {% if message.role == 'user' %}
+                                    <i class="fas fa-user"></i>
+                                {% else %}
+                                    DS
+                                {% endif %}
+                            </div>
+                            <div class="message-text">{{ message.content | safe }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="welcome-message">
+                    <h1 class="welcome-title">¿En qué puedo ayudarte hoy?</h1>
+                    <p class="welcome-subtitle">Pregúntame cualquier cosa o explora estos ejemplos:</p>
+                    <div class="examples">
+                        </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="input-container">
+            <form method="post" class="input-form" id="chatForm">
+                <textarea
+                    class="input-field"
+                    name="user_input"
+                    id="userInput"
+                    placeholder="Escribe tu mensaje..."
+                    rows="1"
+                    required
+                ></textarea>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== Configuración del Tema =====
+        const themeToggle = document.getElementById("themeToggle");
+        const body = document.body;
+        let isDark = localStorage.getItem("themePreference") === "dark" || true;
+
+        themeToggle.addEventListener("click", () => {
+            isDark = !isDark;
+            body.setAttribute("data-theme", isDark ? "dark" : "light");
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            localStorage.setItem("themePreference", isDark ? "dark" : "light");
+        });
+
+        // ===== Manejo del Chat =====
+        const chatForm = document.getElementById("chatForm");
+        const userInput = document.getElementById("userInput");
+        const submitBtn = document.getElementById("submitBtn");
+        const chatMessages = document.getElementById("chatMessages");
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userMessage = userInput.value.trim();
+
+            if (!userMessage) return;
+
+            // Bloquear UI
+            userInput.disabled = true;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            // Mostrar indicador de carga
+            const loader = createLoader();
+            chatMessages.appendChild(loader);
+            scrollToBottom();
+
+            try {
+                // Enviar mensaje
+                const formData = new FormData();
+                formData.append("user_input", userMessage);
+
+                const response = await fetch("/", {
+                    method: "POST",
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error(await response.text());
+
+                const data = await response.json();
+
+                // Añadir mensajes al DOM
+                addMessage("user", userMessage);
+                addMessage("bot", data.bot_response);
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert(`Error: ${error.message}`);
+            } finally {
+                // Restaurar UI
+                userInput.value = "";
+                userInput.style.height = "auto";
+                userInput.disabled = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                loader.remove();
+                scrollToBottom();
+            }
+        });
+
+        // ===== Funciones Auxiliares =====
+        function createLoader() {
+            const div = document.createElement("div");
+            div.className = "message message-bot";
+            div.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar avatar-bot">DS</div>
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>`;
+            return div;
+        }
+
+        function addMessage(role, content) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message message-${role}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar avatar-${role}">
+                        ${role === "user" ? '<i class="fas fa-user"></i>' : "DS"}
+                    </div>
+                    <div class="message-text">${content}</div>
+                </div>`;
+            chatMessages.appendChild(messageDiv);
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Autoajuste del textarea
+        userInput.addEventListener("input", () => {
+            userInput.style.height = "auto";
+            userInput.style.height = `${userInput.scrollHeight}px`;
+        });
+    </script>
+</body>
+</html>
