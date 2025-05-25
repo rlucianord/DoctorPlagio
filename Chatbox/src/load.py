@@ -1,24 +1,24 @@
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
-__import__('pysqlite3')
+# __import__('pysqlite3')
 import sys
-
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+from PIL import Image
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from chromadb import Client 
 from chromadb.config import Settings
  
 from chromadb.utils import embedding_functions
 from PyPDF2 import PdfReader
-import os,re,shutil,chromadb,pickle,glob,pytesseract,pdf2image
+import os,re,shutil,chromadb,pickle,glob,pytesseract,pdf2image,cv2,ocrmypdf
 from sentence_transformers import SentenceTransformer
 from pdf2image import convert_from_path
-import re,shutil,pymupdf
+import pymupdf,fitz
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer,AutoModelForMaskedLM
 from datasets import Dataset
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = "./Chatbox/poppler-24.08.0/Tesseract-OCR/tesseract.exe" 
-OPPLER_PATH = r"./Chatbox/poppler-24.08.0/Library/bin"  # Asegúrate de que esta ruta es correct
+# pytesseract.pytesseract.tesseract_cmd = r"./poppler-24.08.0/Tesseract-OCR/tesseract.exe" 
+OPPLER_PATH = r"./poppler-24.08.0/Library/bin"  # Asegúrate de que esta ruta es correct
 
 
 lista_textos = []
@@ -68,13 +68,12 @@ def cargar_pdfs(filelist,rnc=None,datadir="data/pdfs"):
                 print(f"Archivo copiado: {nombre_archivo}")
 
             try:
-                with pymupdf.open(nombre_archivo) as archivo_pdf:
-                    #lector_pdf = PdfReader(archivo_pdf)
-                    p=1
+                with pymupdf.open(nombre_archivo) as lector_pdf:
+                    
                     texto_pagina = ""
-                    for pagina in  archivo_pdf:
+                    for pagina in  lector_pdf:
                        
-                        texto_pagina += clean_text(pagina.get_text("text"))   
+                        texto_pagina += clean_text(pagina.get_text("text"))
 
                         if texto_pagina:
                             textos.append(texto_pagina)
@@ -103,29 +102,48 @@ def cargar_pdfs(filelist,rnc=None,datadir="data/pdfs"):
 def just_extract_text(pdf_path):
     """Extrae texto de un PDF y usa OCR si es necesario."""
     
-    try:
-        for pdf_file in pdf_path:
-            if pdf_file.endswith(".pdf"):
-                 
-                pdf = PdfReader(pdf_file)
-                for page in pdf.pages:
-                    text = clean_text(page.extract_text())
-                    if text:
-                        lista_textos .append(text)
-                    else:
-                        print(f"⚠️ OCR activado para {pdf_file}")
-                        images = convert_from_path(pdf_file, poppler_path=POPPLER_PATH)
-                        ocr_text = " ".join([pytesseract.image_to_string(img) for img in images])
-                        lista_textos.append(ocr_text)
+    
+    for pdf_file in pdf_path:
+        
+            pdf_document = fitz.open(pdf_file)
+            text=""            
+            try:        
+                for page_num in range((pdf_document.page_count)):
+                    page=pdf_document.load_page(page_num)
+                    text = text.join(page.get_text())
+                    page_num +=1
+               
+                if text:
+                    lista_textos .append(text)
+                else:
                         
+                    print(f"⚠️ OCR activado para {pdf_file}")
+#                     page = pdf_document.load_page(page_number)
+
+#                     # Get images on the page
+#                     image_list = page.get_images(full=True)
+#                     print(f'Found {len(image_list)} images on page {page_number + 1}.')
+
+# # Process each image
+#                     for img_index, img in enumerate(image_list, start=1):
+#                         xref = img[0]
+#                         base_image = pdf_document.extract_image(xref)
+#                         image_bytes = base_image["image"]
+#                         tt= pymupdf.open("pdf", image_bytes)
+#                         for paget in tt.pages:
+#                             texto=paget.get_text()
+                                            # lista_textos.append(texto_pagina)
+                print(f"⚠️ Completado {pdf_file}")
+                pdf_document.close()          
+            except Exception as e:
+                print(f"❌ Error al procesar {pdf_file}: {e}")
+                continue            
                    
 
-        return  lista_textos
+    return  lista_textos
     
 
-    except Exception as e:
-        print(f"❌ Error al procesar {pdf_path}: {e}")
-        return "(Error al procesar PDF)"
+   
 
 
 
@@ -177,8 +195,8 @@ def finaltrain(files):
     modelo_nombre ="EleutherAI/pythia-410m"  # "unsloth/claude-3.7-sonnet-reasoning-gemma3-12B"#unsloth/gemma-3-4b-it-bnb-4bit-- google/gemma-7b-it"  # Nombre del modelo preentrenado
     ruta_guardado_modelo = "data/modelo_fine_tuned_pythia"  # Ruta donde se guardará el modelo fine-tuneado
     ruta_checkpoint = f"{ruta_guardado_modelo}/checkpoint-01000"
-    num_epochs = 2
-    batch_size = 2
+    num_epochs = 3
+    batch_size = 4
 
     # 1. Cargar textos desde los PDFs
 
@@ -219,17 +237,22 @@ def finaltrain(files):
     trainer = entrenar_modelo(modelo, tokenized_datasets, training_args, tokenizer)
 
     # 7. Guardar el modelo entrenado
-    guardar_modelo_entrenado(trainer, ruta_guardado_modelo)
+    guardar_modelo_entrenado(trainer, ruta_guardado_modelo)##ruta_checkpoint
+    guardar_modelo_entrenado(trainer, ruta_checkpoint)##ruta_checkpoint
+    
 
     print("Proceso de fine-tuning completado.")   
+    
+    
 if __name__ == "__main__":
-    cd= './Chatbox/poppler-24.08.0/Library/bin'
-    ps= os.environ['PATH'] + cd
-    #ps= os.environ['PATH'] + cd    
-    os.environ['PATH'] = ps
-    directory_path = './Chatbox/data/pdfs'
-    files=glob.glob(f"{directory_path}/**/*", recursive=True)[3:]
-    files = [f for f in files if os.path.isfile(f)]
+    # cd= './poppler-24.08.0/Library/bin'
+    # ps= os.environ['PATH'] + cd
+    # #ps= os.environ['PATH'] + cd    
+    # os.environ['PATH'] = ps
+    #
+    cd='./'
+    files=glob.glob(f"{cd}/**/*.pdf", recursive=True)[:10]
+       
     finaltrain(files)
 
 
