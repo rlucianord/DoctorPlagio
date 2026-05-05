@@ -13,3 +13,15 @@ langchain
 pydantic[email]
 python-multipart
 pandas
+agency_swarm
+chromadb
+pymupdf
+sentence_transformers
+fitz
+Pandas
+Flask
+tensorflow[and-cuda]
+scikit-learn
+matplotlib
+agency-swarm 
+pysqlite3-binary
