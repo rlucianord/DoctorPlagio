@@ -1,0 +1,33 @@
+# Web & Server
+fastapi
+uvicorn[standard]
+Flask
+python-multipart
+httpx
+
+# Database & Persistence
+sqlalchemy
+psycopg2-binary
+pysqlite3-binary
+chromadb
+
+# AI & Agent Frameworks
+agency-swarm
+langchain
+sentence-transformers
+tensorflow[and-cuda]
+
+# Data Science & Processing
+pandas
+numpy
+scikit-learn
+matplotlib
+
+# Security & Auth
+pydantic[email]
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Document Handling & Tools
+pymupdf
+stripe

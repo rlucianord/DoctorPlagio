@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrPlagiumDoctor - Detector de Plagio Inteligente</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DrPlagiumDoctor</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="current">Inicio</a></li>
+                <li><a href="check.html">Verificar Plagio</a></li>
+                <li><a href="login.html">Iniciar Sesión</a></li>
+                <li><a href="#">Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="home">
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Descubre la Originalidad de tus Textos con DrPlagiumDoctor</h2>
+                <p>Nuestro avanzado sistema detecta plagio textual y contenido generado por IA con precisión.</p>
+                <a href="check.html" class="cta-button">Verificar Ahora</a>
+            </div>
+        </section>
+
+        <section class="features">
+            <h3>Características Principales</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <img src="assets/text-analysis.svg" alt="Análisis de Texto">
+                    <h4>Análisis Textual Profundo</h4>
+                    <p>Identificamos similitudes con extensas bases de datos de textos.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="assets/ai-detection.svg" alt="Detección de IA">
+                    <h4>Detección de Contenido IA</h4>
+                    <p>Tecnología de punta para identificar texto generado por modelos de lenguaje.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="assets/report.svg" alt="Informes Detallados">
+                    <h4>Informes Detallados</h4>
+                    <p>Recibe informes claros con porcentajes de plagio y detalles específicos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing">
+            <h3>Planes de Suscripción</h3>
+            <div class="pricing-options">
+                <div class="pricing-card">
+                    <h4>Básico</h4>
+                    <p class="price">$9.99 / mes</p>
+                    <ul>
+                        <li>Análisis limitado</li>
+                        <li>Informes estándar</li>
+                    </ul>
+                    <a href="#" class="subscribe-button">Suscribirse</a>
+                </div>
+                <div class="pricing-card premium">
+                    <h4>Premium</h4>
+                    <p class="price">$29.99 / mes</p>
+                    <ul>
+                        <li>Análisis ilimitado</li>
+                        <li>Informes detallados</li>
+                        <li>Soporte prioritario</li>
+                    </ul>
+                    <a href="#" class="subscribe-button">Suscribirse</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DrPlagiumDoctor. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

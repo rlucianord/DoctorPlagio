@@ -1,0 +1,7 @@
+{
+     "python.defaultInterpreterPath": "${workspaceFolder}./Python-3.12.3/python", //this most be change when you configure your space
+    "python.terminal.activateEnvInSelectedTerminal": true,
+    "python.analysis.extraPaths": [
+        "./chatbox/src"
+    ]
+}

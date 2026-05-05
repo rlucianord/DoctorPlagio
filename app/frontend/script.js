@@ -51,36 +51,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica de Verificación de Plagio ---
-    if (plagiarismCheckForm) {
-        plagiarismCheckForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            loadingIndicatorDiv.style.display = 'block';
-            analysisResultsDiv.style.display = 'none';
-            analysisErrorDiv.style.display = 'none';
+   // --- Lógica de Verificación de Plagio ---
+if (plagiarismCheckForm) {
+    plagiarismCheckForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        loadingIndicatorDiv.style.display = 'block';
+        analysisResultsDiv.style.display = 'none';
+        analysisErrorDiv.style.display = 'none';
 
-            const formData = new FormData(plagiarismCheckForm);
-            try {
-                const response = await fetch(`${API_BASE_URL}/analyze`, {
-                    method: 'POST',
-                    body: formData,
-                });
+        const formData = new FormData(plagiarismCheckForm);
+        try {
+            const response = await fetch(`${API_BASE_URL}/analyze`, {
+                method: 'POST',
+                body: formData,
+            });
 
-                if (!response.ok) {
-                    throw new Error('Error al analizar el documento.');
-                }
-
-                const result = await response.json();
-                document.getElementById('plagiarismPercentageText').textContent = result.plagiarism_percentage_text || 'N/A';
-                analysisResultsDiv.style.display = 'block';
-            } catch (error) {
-                analysisErrorDiv.textContent = error.message || 'Error desconocido.';
-                analysisErrorDiv.style.display = 'block';
-            } finally {
-                loadingIndicatorDiv.style.display = 'none';
+            if (!response.ok) {
+                throw new Error('Error al analizar el documento.');
             }
-        });
-    }
 
+            const result = await response.json();
+
+            // CORRECCIÓN AQUÍ: Usa el nombre exacto que definimos en el backend
+            // Cambiamos 'plagiarism_percentage_text' por 'plagiarism_percentage'
+            const porcentaje = result.plagiarism_percentage !== undefined ? result.plagiarism_percentage : '0';
+            document.getElementById('plagiarismPercentageText').textContent = porcentaje;
+
+            // OPCIONAL: Inyectar los detalles de las fuentes encontradas
+            if (result.details && result.details.length > 0) {
+                const detailsDiv = document.getElementById('plagiarismDetailsText');
+                detailsDiv.innerHTML = '<h4>Fuentes detectadas:</h4>' + 
+                    result.details.map(d => `<li>${(d.similarity * 100).toFixed(1)}% - ${d.source}</li>`).join('');
+            }
+
+            analysisResultsDiv.style.display = 'block';
+        } catch (error) {
+            analysisErrorDiv.textContent = error.message || 'Error desconocido.';
+            analysisErrorDiv.style.display = 'block';
+        } finally {
+            loadingIndicatorDiv.style.display = 'none';
+        }
+    });
+}
     // --- Otras funcionalidades (logout, registro, etc.) se agregarían aquí ---
 });
