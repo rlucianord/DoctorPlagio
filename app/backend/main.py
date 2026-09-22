@@ -80,8 +80,14 @@ def analyze_document():
 
     # Extraer contenido
     if file:
-        document_content = file.read().decode("utf-8", errors="ignore")
-        filename = file.filename
+        filename = file.filename or "documento"
+        raw = file.read()
+        if filename.lower().endswith(".pdf"):
+            import fitz
+            with fitz.open(stream=raw, filetype="pdf") as pdf:
+                document_content = "\n".join(page.get_text("text") for page in pdf)
+        else:
+            document_content = raw.decode("utf-8", errors="ignore")
     else:
         document_content = text
         filename = "Entrada_Manual"
