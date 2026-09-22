@@ -73,7 +73,7 @@ def analyze_document():
     
     # Soporte para texto directo o archivo
     text = request.form.get("text")
-    file = request.files.get("file")
+    file = request.files.get("file") or request.files.get("document")
     
     if not text and not file:
         return jsonify({"detail": "Debe proveer texto o un archivo"}), 400
