@@ -11,4 +11,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_...") # Tu clave secreta de Stripe
 # Otras configuraciones para Ollama si es necesario
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mixtral")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")

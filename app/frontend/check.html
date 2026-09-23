@@ -1,111 +1,270 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificar Plagio - DrPlagiumDoctor</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificar Plagio - DrPlagiumDoctor</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <h1><a href="index.html">DrPlagiumDoctor</a></h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li class="current"><a href="check.html">Verificar Plagio</a></li>
-                <li><a href="login.html">Iniciar Sesión</a></li>
-                <li><a href="#">Registro</a></li>
-            </ul>
-        </nav>
-    </header>
+  <header>
+    <h1><a href="index.html">DrPlagiumDoctor</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li class="current"><a href="check.html">Verificar Plagio</a></li>
+        <li><a href="login.html">Iniciar Sesión</a></li>
+        <li><a href="#">Registro</a></li>
+      </ul>
+    </nav>
+  </header>
 
-   E<main class="check-page">
+  <main class="check-page">
     <section class="plagiarism-check">
-        <h2>Verificar Plagio</h2>
-        <!-- El formulario solo debe contener los inputs y el botón -->
-        <form id="plagiarismCheckForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="document">Subir Documento (PDF, TXT, DOCX):</label>
-                <input type="file" id="document" name="document" accept=".pdf,.txt,.docx">
-            </div>
-            <div class="form-group">
-                <label for="text">O pegar texto directamente:</label>
-                <textarea id="text" name="text" rows="10" placeholder="Pega tu texto aquí..."></textarea>
-            </div>
-            <button type="submit" class="submit-button">Analizar</button>
-        </form>
+      <h2>Verificar Plagio</h2>
 
-        <!-- Estos elementos deben estar FUERA del form para evitar conflictos -->
-        <div id="loadingIndicator" class="loading" style="display:none;">Analizando...</div>
-
-        <div id="analysisResults" class="results" style="display:none;">
-            <h3>Resultados del Análisis</h3>
-            <p>Porcentaje de Plagio (Texto): <span id="plagiarismPercentageText"></span>%</p>
-            <div id="plagiarismDetailsText"></div>
-            <p>Porcentaje de Contenido IA: <span id="aiDetectionPercentage"></span>%</p>
-            <p>Porcentaje Escrito por Humano: <span id="humanContentPercentage"></span>%</p>
-            <div id="aiDetectionDetails"></div>
-            <button id="downloadReport" class="report-button" style="display:none;">Descargar Informe</button>
+      <form id="plagiarismCheckForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="document">Subir Documento (PDF, TXT, DOCX):</label>
+          <input type="file" id="document" name="document"
+                 accept=".pdf,.txt,.docx" />
         </div>
-        
-        <div id="analysisError" class="error-message" style="display:none;"></div>
+
+        <div class="form-group">
+          <label for="text">O pegar texto directamente:</label>
+          <textarea id="text" name="text" rows="10"
+                    placeholder="Pega tu texto aquí..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-button">Analizar</button>
+      </form>
+
+      <div id="loadingIndicator" class="loading" style="display:none;">
+        Analizando...
+      </div>
+
+      <div id="analysisResults" class="results" style="display:none;">
+        <h3>Resultados del Análisis</h3>
+
+        <p>
+          Porcentaje de Plagio (Texto):
+          <span id="plagiarismPercentageText">0</span>%
+        </p>
+
+        <p>
+          <strong>Interpretación:</strong>
+          <span id="plagiarismInterpretation">Interpretación no disponible.</span>
+        </p>
+
+        <div id="plagiarismDetailsText"></div>
+
+        <p>
+          Porcentaje de Contenido IA:
+          <span id="aiDetectionPercentage">N/D</span>%
+        </p>
+
+        <p>
+          Porcentaje Estimado de Características Humanas:
+          <span id="humanContentPercentage">N/D</span>%
+        </p>
+
+        <div id="aiDetectionDetails"></div>
+        <div id="analysisMeta" class="analysis-meta"></div>
+
+        <button id="downloadReport" class="report-button"
+                style="display:none;">
+          Descargar Informe
+        </button>
+      </div>
+
+      <div id="analysisError" class="error-message" style="display:none;"></div>
     </section>
-</main>
+  </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const plagiarismCheckForm = document.getElementById('plagiarismCheckForm');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const analysisResults = document.getElementById('analysisResults');
-    const analysisError = document.getElementById('analysisError');
-    const API_BASE_URL = 'http://localhost:5000';
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("plagiarismCheckForm");
+      const loading = document.getElementById("loadingIndicator");
+      const resultsBox = document.getElementById("analysisResults");
+      const errorBox = document.getElementById("analysisError");
 
-    if (plagiarismCheckForm) {
-        plagiarismCheckForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Detiene el envío tradicional
-            
-            loadingIndicator.style.display = 'block';
-            analysisResults.style.display = 'none';
-            analysisError.style.display = 'none';
+      const plagiarismPercentage =
+        document.getElementById("plagiarismPercentageText");
+      const plagiarismInterpretation =
+        document.getElementById("plagiarismInterpretation");
+      const plagiarismDetails =
+        document.getElementById("plagiarismDetailsText");
 
-            const formData = new FormData(plagiarismCheckForm);
-            
-            try {
-                // REALIZAR LA PETICIÓN (Esto faltaba en tu código)
-                const response = await fetch(`${API_BASE_URL}/analyze`, {
-                    method: 'POST',
-                    body: formData,
-                });
+      const aiPercentage =
+        document.getElementById("aiDetectionPercentage");
+      const humanPercentage =
+        document.getElementById("humanContentPercentage");
+      const aiDetails =
+        document.getElementById("aiDetectionDetails");
+      const analysisMeta =
+        document.getElementById("analysisMeta");
 
-                if (!response.ok) throw new Error('Error al conectar con el servidor.');
+      const API_BASE_URL = "http://localhost:5000";
 
-                const result = await response.json();
-                console.log("Data recibida:", result);
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-                // Acceder al nivel 'results' que vimos en tu consola
-                const dataReal = result.results || result; 
-                const porcentaje = dataReal.plagiarism_percentage !== undefined ? dataReal.plagiarism_percentage : '0';
+        loading.style.display = "block";
+        resultsBox.style.display = "none";
+        errorBox.style.display = "none";
 
-                // Inyectar en el DOM[cite: 1]
-                document.getElementById('plagiarismPercentageText').textContent = porcentaje > 100 ? 100 : porcentaje;
+        try {
+          const formData = new FormData(form);
 
-                if (dataReal.ai_analysis) {
-                    document.getElementById('aiDetectionPercentage').textContent = (dataReal.ai_analysis.ai_score * 100).toFixed(2);
-                    const humanPct = (dataReal.ai_analysis.human_score * 100).toFixed(2);
-                    document.getElementById('humanContentPercentage').textContent = humanPct;
-                   const labelDiv = document.getElementById('aiDetectionDetails');
-                   labelDiv.innerHTML = `<strong>Predominio:</strong> ${dataReal.ai_analysis.label}`;
-                }
+          const response = await fetch(`${API_BASE_URL}/analyze`, {
+            method: "POST",
+            body: formData
+          });
 
+          const result = await response.json();
+          console.log("Data recibida:", result);
 
-                analysisResults.style.display = 'block';
-            } catch (error) {
-                analysisError.textContent = error.message;
-                analysisError.style.display = 'block';
-            } finally {
-                loadingIndicator.style.display = 'none';
-            }
-        });
-    }
-});
-</script>
+          if (!response.ok) {
+            throw new Error(
+              result.detail ||
+              result.error ||
+              `El servidor respondió con HTTP ${response.status}.`
+            );
+          }
+
+          const data = result.results || result;
+
+          // ----- PLAGIO -----
+          const rawPercentage = Number(data.plagiarism_percentage);
+          const percentage = Number.isFinite(rawPercentage)
+            ? Math.max(0, Math.min(100, rawPercentage))
+            : 0;
+
+          plagiarismPercentage.textContent =
+            percentage.toFixed(2).replace(/\.00$/, "");
+
+          // analysis_meta NO está dentro de ai_analysis.
+          // Se lee directamente desde data.
+          const meta = data.analysis_meta || {};
+
+          plagiarismInterpretation.textContent =
+            meta.interpretation ||
+            "Interpretación no disponible.";
+
+          const metaParts = [];
+
+          if (meta.chunks_analyzed !== undefined) {
+            metaParts.push(`Fragmentos analizados: ${meta.chunks_analyzed}`);
+          }
+
+          if (meta.chunks_with_strong_evidence !== undefined) {
+            metaParts.push(
+              `Fragmentos con evidencia fuerte: ${meta.chunks_with_strong_evidence}`
+            );
+          }
+
+          if (meta.model) {
+            metaParts.push(`Modelo: ${meta.model}`);
+          }
+
+          if (meta.metric) {
+            metaParts.push(`Métrica: ${meta.metric}`);
+          }
+
+          analysisMeta.textContent = metaParts.join(" · ");
+
+          // ----- DETALLES DE COINCIDENCIAS -----
+          plagiarismDetails.innerHTML = "";
+
+          const details = Array.isArray(data.details) ? data.details : [];
+
+          if (details.length === 0) {
+            plagiarismDetails.textContent =
+              "No se encontraron coincidencias con evidencia fuerte.";
+          } else {
+            const title = document.createElement("p");
+            title.innerHTML = "<strong>Coincidencias detectadas:</strong>";
+            plagiarismDetails.appendChild(title);
+
+            details.forEach((detail, index) => {
+              const item = document.createElement("div");
+
+              const source = detail.source || "Fuente desconocida";
+              const classification =
+                detail.classification || "Sin clasificación";
+              const evidence =
+                detail.evidence_score !== undefined
+                  ? Number(detail.evidence_score).toFixed(4)
+                  : "N/D";
+
+              item.innerHTML = `
+                <p>
+                  <strong>Coincidencia ${index + 1}</strong><br>
+                  Fuente: ${escapeHtml(source)}<br>
+                  Clasificación: ${escapeHtml(classification)}<br>
+                  Evidencia: ${evidence}
+                </p>
+              `;
+
+              plagiarismDetails.appendChild(item);
+            });
+          }
+
+          // ----- DETECCIÓN DE IA -----
+          const ai = data.ai_analysis;
+
+          if (ai && typeof ai === "object") {
+            const aiScore = Number(ai.ai_score);
+            const humanScore = Number(ai.human_score);
+
+            aiPercentage.textContent = Number.isFinite(aiScore)
+              ? (Math.max(0, Math.min(1, aiScore)) * 100).toFixed(2)
+              : "N/D";
+
+            humanPercentage.textContent = Number.isFinite(humanScore)
+              ? (Math.max(0, Math.min(1, humanScore)) * 100).toFixed(2)
+              : "N/D";
+
+            aiDetails.innerHTML = `
+              <p>
+                <strong>Predominio:</strong>
+                ${escapeHtml(ai.label || "Resultado no disponible")}
+              </p>
+              ${
+                ai.reasoning
+                  ? `<p><strong>Análisis:</strong> ${escapeHtml(ai.reasoning)}</p>`
+                  : ""
+              }
+            `;
+          } else {
+            aiPercentage.textContent = "N/D";
+            humanPercentage.textContent = "N/D";
+            aiDetails.innerHTML =
+              "<p><strong>Detección de IA:</strong> No disponible.</p>";
+          }
+
+          resultsBox.style.display = "block";
+        } catch (error) {
+          console.error("Error en /analyze:", error);
+          errorBox.textContent =
+            error instanceof Error
+              ? error.message
+              : "Ocurrió un error durante el análisis.";
+          errorBox.style.display = "block";
+        } finally {
+          loading.style.display = "none";
+        }
+      });
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+    });
+  </script>
+</body>
+</html>
