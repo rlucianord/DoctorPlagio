@@ -1,22 +1,36 @@
 import sys
-import asyncio # Necesario para procesar la lógica async de plagiarism
+import asyncio  # Necesario para procesar la lógica async de plagiarism
+
 from pathlib import Path
+
 from flask import Flask, request, jsonify
+
 from sqlalchemy.orm import Session
+
 from datetime import datetime, timedelta
+
 import os
 
+
 # --- AJUSTE DE PATH ---
+
 root_path = Path(__file__).resolve().parents[1]
+
 if str(root_path) not in sys.path:
     sys.path.insert(0, str(root_path))
 
+
 # --- IMPORTS DEL PROYECTO ---
+
 from backend import models, auth, payments, plagiarism, database
-from backend.database import SessionLocal, engine 
+
+from backend.database import SessionLocal, engine
+
 from backend.auth import (
-    verify_password, create_access_token, 
-    get_password_hash, get_current_active_user
+    verify_password,
+    create_access_token,
+    get_password_hash,
+    get_current_active_user
 )
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
 app = Flask(__name__, 
