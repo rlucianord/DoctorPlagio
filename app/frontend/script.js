@@ -80,8 +80,12 @@ if (plagiarismCheckForm) {
             // OPCIONAL: Inyectar los detalles de las fuentes encontradas
             if (result.details && result.details.length > 0) {
                 const detailsDiv = document.getElementById('plagiarismDetailsText');
-                detailsDiv.innerHTML = '<h4>Fuentes detectadas:</h4>' + 
-                    result.details.map(d => `<li>${(d.similarity * 100).toFixed(1)}% - ${d.source}</li>`).join('');
+                detailsDiv.innerHTML = '<h4>Coincidencias detectadas:</h4>' +
+                    '<ul>' + result.details.map(d => {
+                        const score = d.evidence_score !== undefined ? (d.evidence_score * 100).toFixed(1) : (d.similarity * 100).toFixed(1);
+                        const kind = d.classification || 'match';
+                        return `<li><strong>${score}% evidencia</strong> - ${kind} - ${d.source}<br><small>${d.fragment || ''}</small></li>`;
+                    }).join('') + '</ul>';
             }
 
             analysisResultsDiv.style.display = 'block';
