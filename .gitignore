@@ -1,0 +1,5 @@
+# Ignorar modelos grandes
+models/*.gguf
+
+# Ignorar entornos virtuales
+.venv/
