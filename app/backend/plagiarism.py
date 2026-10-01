@@ -3,30 +3,20 @@ import asyncio
 import json
 import re
 from pathlib import Path
-import sys
 import httpx
 import numpy as np
 
-from backend.local_llm import generate_json
-# ============================================================
-# RUTA DEL PROYECTO
-# ============================================================
-
-path_actual = Path(__file__).resolve()
-raiz_proyecto = path_actual.parents[2]
-
-if str(raiz_proyecto) not in sys.path:
-    sys.path.insert(0, str(raiz_proyecto))
+from .local_llm import generate_json
 
 
 # ============================================================
 # IMPORTACIONES DEL PROYECTO
 # ============================================================
 
-from backend.config import OLLAMA_BASE_URL, OLLAMA_MODEL
-from backend.vector_store import get_collection
+from .config import OLLAMA_BASE_URL, OLLAMA_MODEL
+from .vector_store import get_collection
 
-from backend.similarity_engine import (
+from .similarity_engine import (
     get_model,
     sentence_chunks,
     analyze_fragment_against_candidate,

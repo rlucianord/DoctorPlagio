@@ -1,23 +1,17 @@
-import sys
-from pathlib import Path
 from datetime import datetime 
 from typing import List, Optional
-
+from pathlib import Path
 # --- AJUSTE DE PATH ---
-root_path = Path(__file__).resolve().parents[1]
-if str(root_path) not in sys.path:
-    sys.path.insert(0, str(root_path))
-
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, func, create_engine
 from sqlalchemy.orm import relationship, sessionmaker
+
 from pydantic import BaseModel, ConfigDict # Importamos ConfigDict
-from backend import database
-from backend.config import DATABASE_URL
+from . import database
+
 
 # Configuración de Engine
-engine = create_engine(DATABASE_URL)
 Base = database.Base
-
+engine = database.engine
 # ==========================================
 # 1. MODELOS DE BASE DE DATOS (SQLAlchemy)
 # ==========================================
