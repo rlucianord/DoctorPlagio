@@ -1,17 +1,12 @@
 import os
-import sys
 import asyncio
 from pathlib import Path
 
-import fitz
+import pymupdf
 from sentence_transformers import SentenceTransformer
 
-ROOT = Path(__file__).resolve().parents[2]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from backend.vector_store import get_collection
-from backend.similarity_engine import MODEL_NAME, sentence_chunks
+from .vector_store import get_collection
+from .similarity_engine import MODEL_NAME, sentence_chunks
 
 MODEL = None
 
@@ -26,7 +21,7 @@ def get_model():
 def extraer_texto_pdf(path_archivo):
     texto_completo = ""
     try:
-        with fitz.open(path_archivo) as doc:
+        with pymupdf.open(path_archivo) as doc:
             for pagina in doc:
                 texto_completo += pagina.get_text("text") + "\n"
     except Exception as exc:

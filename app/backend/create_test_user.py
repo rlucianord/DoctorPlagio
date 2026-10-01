@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from database import SessionLocal
-from backend.models import User
-from backend.auth import get_password_hash,verify_password
-import backend.auth as auth
+from .database import SessionLocal
+from .models import User
+from .auth import get_password_hash, verify_password
+from . import auth
 def create_test_user():
     # Crear una sesión de base de datos
     db: Session = SessionLocal()
