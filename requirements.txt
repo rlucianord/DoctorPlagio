@@ -1,31 +1,27 @@
-# Web & Server
 fastapi
 uvicorn[standard]
-Flask
-python-multipart
-httpx
-
-# Database & Persistence
 sqlalchemy
 psycopg2-binary
-chromadb
-
-# AI & Agent Frameworks
-agency-swarm
-langchain
-sentence-transformers
-
-# Data Science & Processing
-pandas
-numpy
-scikit-learn
-matplotlib
-
-# Security & Auth
-pydantic[email]
 python-jose[cryptography]
 passlib[bcrypt]
-
-# Document Handling & Tools
+httpx
+pydantic
+scikit-learn
+numpy
+stripe
+langchain
+pydantic[email]
+python-multipart
+pandas
+agency_swarm
+chromadb
 pymupdf
-stripe>=11,<14
+sentence_transformers
+fitz
+Pandas
+Flask
+tensorflow[and-cuda]
+scikit-learn
+matplotlib
+agency-swarm 
+pysqlite3-binary
