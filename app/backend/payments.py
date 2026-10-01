@@ -1,11 +1,7 @@
 import stripe
-import sys
-from pathlib import Path
-sys.path[0] = str(Path(sys.path[0]).parent)
-print(sys.path[1])
-from backend.config import STRIPE_SECRET_KEY
+from .config import STRIPE_SECRET_KEY
 from sqlalchemy.orm import Session
-from backend import  models,schemas
+from . import models, schemas
 from datetime import datetime, timedelta
 
 stripe.api_key = STRIPE_SECRET_KEY

@@ -13,11 +13,11 @@ class User(UserBase):
     id: int
     is_active: bool
     registration_date: datetime
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True,orm_mode=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 class Token(BaseModel):
     access_token: str
     token_type: str
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True,orm_mode =True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
    
 class DocumentBase(BaseModel):
@@ -28,7 +28,7 @@ class Document(DocumentBase):
     owner_id: int
     upload_date: datetime
     content: str
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True,orm_mode=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
 class PlagiarismResultBase(BaseModel):
     plagiarism_percentage_text: Optional[int]
@@ -36,10 +36,10 @@ class PlagiarismResultBase(BaseModel):
     ai_detection_percentage: Optional[int]
     ai_detection_details: Optional[Dict[str, Any]] # Usar Dict[str, Any]
     report_path: Optional[str]
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True,orm_mode=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 class PlagiarismResult(PlagiarismResultBase):
     id: int
     document_id: int
     analysis_date: datetime
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True,orm_mode=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
