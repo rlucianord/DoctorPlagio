@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pathlib import Path
 # --- AJUSTE DE PATH ---
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, func, create_engine
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Float, func, create_engine
 from sqlalchemy.orm import relationship, sessionmaker
 
 from pydantic import BaseModel, ConfigDict # Importamos ConfigDict
@@ -38,6 +38,7 @@ class Document(Base):
     
     owner = relationship("User", back_populates="documents")
     analysis_results = relationship("PlagiarismResult", back_populates="document")
+    versions = relationship("DocumentVersion", back_populates="document", cascade="all, delete-orphan")
 
 class PlagiarismResult(Base):
     __tablename__ = "plagiarism_results"
@@ -51,6 +52,25 @@ class PlagiarismResult(Base):
     report_path = Column(String, nullable=True)
     
     document = relationship("Document", back_populates="analysis_results")
+
+class DocumentVersion(Base):
+    __tablename__ = "document_versions"
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id"), nullable=False, index=True)
+    previous_version_id = Column(Integer, ForeignKey("document_versions.id"), nullable=True, index=True)
+    version_number = Column(Integer, nullable=False, default=1)
+    file_hash = Column(String(64), nullable=True, index=True)
+    text_hash = Column(String(64), nullable=False, index=True)
+    normalized_chars = Column(Integer, nullable=True)
+    similarity_to_previous = Column(Float, nullable=True)
+    status = Column(String(40), nullable=False, default="new_analysis")
+    diff_json = Column(Text, nullable=True)
+    analysis_json = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+
+    document = relationship("Document", back_populates="versions")
+    previous_version = relationship("DocumentVersion", remote_side=[id], uselist=False)
+
 
 class Subscription(Base):
     __tablename__ = "subscriptions"
