@@ -15,6 +15,12 @@ env/
 
 # Logs
 *.log
+
 # Ignorar modelos grandes
 models/*.gguf
- 
+
+# Ignorar directorio de Python
+Python-3.12.3/
+
+# Ignorar archivos comprimidos
+*.zip

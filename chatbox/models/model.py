@@ -8,7 +8,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 def get_response(prompt=None):
     model_options = [
         {
-            "model": "Qwen/Qwen3-8B",
+            "model": "unsloth/gpt-oss-20b-GGUF/gpt-oss-20b-Q2_K_L.gguf ",
             "task": "text-generation",
             "is_chat_model": True  # Blenderbot doesn't use chat templates
         },
