@@ -545,7 +545,142 @@ def build_pdf_report(
     # Si no hay coincidencias, la interpretación anterior ya comunica el resultado.
 
     # ============================================================
-    # 3. IA
+    # 3. COPY/PASTE
+    # ============================================================
+
+    copypaste = results.get("copypaste_analysis") or {}
+    if copypaste:
+        story.append(
+            Paragraph(
+                "3. Detección de Copy/Paste",
+                styles["DPH1"],
+            )
+        )
+
+        cp_rows = [
+            ["Indicador", "Resultado"],
+            [
+                "Porcentaje de Copy/Paste detectado",
+                _pct(copypaste.get("porcentaje_copypaste")),
+            ],
+            [
+                "Documentos del corpus consultado",
+                f"{int(copypaste.get('documentos_corpus') or 0):,}",
+            ],
+            [
+                "Estado de la búsqueda",
+                _safe(copypaste.get("mensaje") or "No disponible"),
+            ],
+        ]
+
+        cpt = Table(
+            cp_rows,
+            colWidths=[10 * cm, 7 * cm],
+            repeatRows=1,
+            hAlign="LEFT",
+        )
+
+        cpt.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eeeeee")),
+                    ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#c0c0c0")),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 7.8),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ]
+            )
+        )
+        story.append(cpt)
+
+        cp_sources = copypaste.get("fuentes") or []
+        cp_evidences = copypaste.get("evidencias") or []
+
+        if cp_sources:
+            story.append(
+                Paragraph(
+                    "Fuentes con coincidencias",
+                    styles["DPH2"],
+                )
+            )
+            source_rows = [["Fuente", "Evidencias"]]
+            for source in cp_sources:
+                source_rows.append(
+                    [
+                        _safe(source.get("fuente") or "Desconocida"),
+                        str(source.get("evidencias") or 0),
+                    ]
+                )
+
+            st = Table(
+                source_rows,
+                colWidths=[14 * cm, 3 * cm],
+                repeatRows=1,
+                hAlign="LEFT",
+            )
+            st.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eeeeee")),
+                        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#c0c0c0")),
+                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                        ("FONTSIZE", (0, 0), (-1, -1), 7.5),
+                        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ]
+                )
+            )
+            story.append(st)
+
+        if cp_evidences:
+            story.append(
+                Paragraph(
+                    "Fragmentos de Copy/Paste encontrados",
+                    styles["DPH2"],
+                )
+            )
+
+            for index, evidence in enumerate(cp_evidences, 1):
+                story.append(
+                    Paragraph(
+                        f"<b>{index}. {_safe(evidence.get('titulo_fuente') or evidence.get('fuente') or 'Fuente desconocida')}</b>",
+                        styles["DPBody"],
+                    )
+                )
+
+                details_line = (
+                    f"Tokens coincidentes: {evidence.get('tokens_coincidentes', 0)}"
+                    f" | Cobertura del documento: {_pct(evidence.get('cobertura_fragmento'))}"
+                )
+                if evidence.get("pagina_documento"):
+                    details_line += f" | Página analizada: {evidence['pagina_documento']}"
+                if evidence.get("pagina_fuente"):
+                    details_line += f" | Página fuente: {evidence['pagina_fuente']}"
+
+                story.append(
+                    Paragraph(
+                        _safe(details_line),
+                        styles["DPSmall"],
+                    )
+                )
+
+                if evidence.get("fragmento_documento"):
+                    story.append(
+                        Paragraph(
+                            f"<b>Documento:</b> {_safe(_short(evidence.get('fragmento_documento'), 900))}",
+                            styles["DPBody"],
+                        )
+                    )
+
+                if evidence.get("fragmento_fuente"):
+                    story.append(
+                        Paragraph(
+                            f"<b>Fuente:</b> {_safe(_short(evidence.get('fragmento_fuente'), 900))}",
+                            styles["DPBody"],
+                        )
+                    )
+
+    # ============================================================
+    # 4. IA
     # ============================================================
 
     global_metrics = ai.get("global_metrics") or {}
@@ -555,7 +690,7 @@ def build_pdf_report(
     # quede aislado al final de una página.
     section3_block = [
         Paragraph(
-            "3. Análisis de características de IA",
+            "4. Análisis de características de IA",
             styles["DPH1"],
         ),
         Paragraph(
@@ -617,7 +752,7 @@ def build_pdf_report(
     if chapters:
         story.append(
             Paragraph(
-                "3.1 Resultados por capítulo/sección",
+                "4.1 Resultados por capítulo/sección",
                 styles["DPH2"],
             )
         )
@@ -696,7 +831,7 @@ def build_pdf_report(
 
         story.append(
             Paragraph(
-                "3.2 Detalle de capítulos y segmentos",
+                "4.2 Detalle de capítulos y segmentos",
                 styles["DPH2"],
             )
         )
@@ -766,7 +901,7 @@ def build_pdf_report(
 
     story.append(
         Paragraph(
-            "4. Evolución del documento",
+            "5. Evolución del documento",
             styles["DPH1"],
         )
     )
@@ -882,7 +1017,7 @@ def build_pdf_report(
 
     story.append(
         Paragraph(
-            "5. Metodología y limitaciones",
+            "6. Metodología y limitaciones",
             styles["DPH1"],
         )
     )

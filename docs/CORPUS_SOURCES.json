@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "idioma_producto": "es",
+  "fuentes": [
+    {
+      "id": "csic_es",
+      "nombre": "CSIC Spanish Corpus",
+      "tipo": "corpus_produccion_candidata",
+      "url": "https://zenodo.org/records/7313126",
+      "licencia_paquete": "CC BY 4.0",
+      "documentos": 30929,
+      "tokens": 146795650,
+      "archivo_principal": "csic_es.txt",
+      "observacion": "Revisar derechos del contenido original antes de uso comercial."
+    },
+    {
+      "id": "usc_cientifico",
+      "nombre": "Corpus de dominio científico y académico",
+      "tipo": "corpus_produccion_candidata",
+      "url": "https://huggingface.co/datasets/proxectonos/corpus_dominio_cientifico",
+      "licencia_dataset": "CC BY 4.0",
+      "documentos_totales_publicados": 83437,
+      "documentos_espanol_minerva": 8584,
+      "observacion": "Incluye USC, Wikipedia científica y Catálogo Minerva; revisar condiciones de cada fuente."
+    },
+    {
+      "id": "pan_pc11",
+      "nombre": "PAN-PC-11",
+      "tipo": "benchmark_investigacion",
+      "url": "https://zenodo.org/records/3250095",
+      "documentos": 26939,
+      "observacion": "Uso gratuito para investigación; no usar como corpus comercial por defecto."
+    },
+    {
+      "id": "pan_es_en",
+      "nombre": "PAN español-inglés para plagio cruzado",
+      "tipo": "benchmark_investigacion",
+      "url": "https://zenodo.org/records/5159398",
+      "archivos": 20000,
+      "pares_espanol_ingles_pan": 2921,
+      "observacion": "Pruebas de plagio cruzado; no usar como corpus comercial por defecto."
+    },
+    {
+      "id": "cereal",
+      "nombre": "CEREAL I",
+      "tipo": "investigacion",
+      "url": "https://zenodo.org/records/11387864",
+      "paises_hispanohablantes": 24,
+      "observacion": "Procede de OSCAR/Common Crawl; los autores no poseen el copyright del texto. No incorporar al corpus comercial por defecto."
+    },
+    {
+      "id": "tdx",
+      "nombre": "TDX Thesis Spanish Corpus",
+      "tipo": "secundaria",
+      "url": "https://zenodo.org/records/7313149",
+      "documentos": 9790,
+      "observacion": "Tesis de universidades catalanas; no es suficientemente universal para ser corpus principal."
+    }
+  ]
+}
