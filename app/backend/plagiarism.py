@@ -8,6 +8,7 @@ import numpy as np
 
 from .local_llm import generate_json
 from .memory_monitor import log_memory, collect_garbage
+from .copypaste_engine import search_copy_paste, estadisticas_corpus
 
 
 # ============================================================
@@ -973,7 +974,14 @@ async def analyze_plagiarism(
 
         return {
             "plagiarism_percentage": 0.0,
-            "details": [],
+            "copypaste_analysis": {
+                "disponible": False,
+                "mensaje": "Documento vacío.",
+                "porcentaje_copypaste": 0.0,
+                "fuentes": [],
+                "evidencias": [],
+                "documentos_corpus": 0,
+            },
             "ai_analysis": {
                 "available": False,
                 "ai_score": None,
@@ -986,7 +994,25 @@ async def analyze_plagiarism(
         }
 
     # ========================================================
-    # FRAGMENTOS PARA PLAGIO
+    # COPY/PASTE — CORPUS LOCAL
+    # ========================================================
+
+    print("📋 Buscando Copy/Paste en el corpus local...")
+    try:
+        copypaste_analysis = search_copy_paste(document_content)
+    except Exception as exc:
+        print(f"⚠️ Error en el motor Copy/Paste: {exc}")
+        copypaste_analysis = {
+            "disponible": False,
+            "mensaje": f"No fue posible ejecutar la búsqueda de Copy/Paste: {exc}",
+            "porcentaje_copypaste": 0.0,
+            "fuentes": [],
+            "evidencias": [],
+            "documentos_corpus": 0,
+        }
+
+    # ========================================================
+    # FRAGMENTOS PARA EL MOTOR EXISTENTE
     # ========================================================
 
     fragments = sentence_chunks(
@@ -997,6 +1023,7 @@ async def analyze_plagiarism(
 
         return {
             "plagiarism_percentage": 0.0,
+            "copypaste_analysis": copypaste_analysis,
             "details": [],
             "ai_analysis": {
                 "available": False,
@@ -1210,6 +1237,8 @@ async def analyze_plagiarism(
 
         "details": details,
 
+        "copypaste_analysis": copypaste_analysis,
+
         "ai_analysis": ai_report,
 
         "analysis_meta": {
@@ -1219,6 +1248,24 @@ async def analyze_plagiarism(
 
             "chunks_with_strong_evidence": (
                 flagged_fragments
+            ),
+
+            "copy_paste_metric": (
+                "fingerprinting_winnowing"
+            ),
+
+            "copy_paste_percentage": (
+                copypaste_analysis.get(
+                    "porcentaje_copypaste",
+                    0.0,
+                )
+            ),
+
+            "copy_paste_corpus_documents": (
+                copypaste_analysis.get(
+                    "documentos_corpus",
+                    0,
+                )
             ),
 
             "metric": (

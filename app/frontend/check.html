@@ -77,7 +77,17 @@
         <h3>Resultados del Análisis</h3>
 
         <p>
-          <strong>Porcentaje de Plagio (Texto):</strong>
+          <strong>Porcentaje de Copy/Paste detectado:</strong>
+          <span id="copyPastePercentage">0</span>%
+        </p>
+
+        <p>
+          <strong>Documentos en el corpus consultado:</strong>
+          <span id="copyPasteCorpusDocuments">0</span>
+        </p>
+
+        <p>
+          <strong>Porcentaje de similitud textual:</strong>
           <span id="plagiarismPercentageText">0</span>%
         </p>
 
@@ -133,6 +143,8 @@
       const resultsBox = document.getElementById("analysisResults");
       const errorBox = document.getElementById("analysisError");
 
+      const copyPastePercentage = document.getElementById("copyPastePercentage");
+      const copyPasteCorpusDocuments = document.getElementById("copyPasteCorpusDocuments");
       const plagiarismPercentage = document.getElementById("plagiarismPercentageText");
       const plagiarismInterpretation = document.getElementById("plagiarismInterpretation");
       const aiPercentage = document.getElementById("aiDetectionPercentage");
@@ -190,6 +202,10 @@
           const data = result.results || result;
           const ai = data.ai_analysis || {};
           const meta = data.analysis_meta || {};
+
+          const copyPaste = data.copypaste_analysis || {};
+          copyPastePercentage.textContent = percent(copyPaste.porcentaje_copypaste);
+          copyPasteCorpusDocuments.textContent = Number(copyPaste.documentos_corpus || 0).toLocaleString("es-DO");
 
           plagiarismPercentage.textContent = percent(data.plagiarism_percentage);
           plagiarismInterpretation.textContent =
