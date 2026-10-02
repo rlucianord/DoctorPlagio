@@ -12,6 +12,7 @@ models/**/*.bin
 # Entornos Python
 .venv/
 venv/
+models/
 __pycache__/
 *.pyc
 .pytest_cache/
