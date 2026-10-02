@@ -60,6 +60,16 @@ def get_model() -> SentenceTransformer:
     return _model
 
 
+def unload_model() -> None:
+    """Release the embedding model so GPT-OSS can use RAM without competing with it."""
+    global _model
+    if _model is not None:
+        del _model
+        _model = None
+        import gc
+        gc.collect()
+
+
 def normalize_text(text: str) -> str:
     text = text.replace("\u00ad", "")
     text = re.sub(r"\s+", " ", text)

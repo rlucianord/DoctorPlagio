@@ -25,3 +25,5 @@ scikit-learn
 matplotlib
 agency-swarm 
 pysqlite3-binary
+
+reportlab

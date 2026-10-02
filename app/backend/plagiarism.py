@@ -7,6 +7,7 @@ import httpx
 import numpy as np
 
 from .local_llm import generate_json
+from .memory_monitor import log_memory, collect_garbage
 
 
 # ============================================================
@@ -87,6 +88,11 @@ def _normalize_document(text: str) -> str:
     return text.strip()
 
 
+def _remove_page_markers(text: str) -> str:
+    """Elimina marcadores internos de página antes del motor de plagio."""
+    return re.sub(r"\[\[PAGE:\d+\]\]", "", text)
+
+
 # ============================================================
 # DETECCIÓN DE ESTRUCTURA ACADÉMICA
 # ============================================================
@@ -110,6 +116,15 @@ def _looks_like_heading(paragraph: str) -> bool:
     """
 
     text = paragraph.strip()
+
+    # Los PDF pueden incluir un marcador interno de página
+    # antes del encabezado. No debe impedir su detección.
+    text = re.sub(
+        r"^\[\[PAGE:\d+\]\]\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
 
     if not text:
         return False
@@ -920,245 +935,16 @@ TEXTO:
 
 async def analyze_ai_document(
     text: str,
+    previous_report: dict | None = None,
 ):
-    """
-    Analiza el documento COMPLETO.
+    """Compatibilidad: delega el análisis IA a AI Analysis V2."""
+    from .ai_document_analysis import analyze_ai_document_v2
 
-    No utiliza text[:1500].
-    No utiliza text[:2000].
-
-    Todos los bloques académicos participan.
-    """
-
-    clean_text = _normalize_document(
-        text
+    return await analyze_ai_document_v2(
+        text,
+        academic_chunks,
+        previous_report=previous_report,
     )
-
-    if not clean_text:
-
-        return {
-            "available": False,
-            "ai_score": None,
-            "human_score": None,
-            "label": "No disponible",
-            "reasoning": (
-                "El documento no contiene texto."
-            ),
-            "chunks_analyzed": 0,
-            "chunks_successful": 0,
-            "chunks": [],
-        }
-
-    print(
-        "🧠 Preparando análisis completo "
-        "del documento..."
-    )
-
-    chunks = academic_chunks(
-        clean_text
-    )
-
-    total_chunks = len(chunks)
-
-    print(
-        f"🧠 Se analizarán "
-        f"{total_chunks} bloques académicos."
-    )
-
-    results = []
-
-    for index, chunk in enumerate(
-        chunks,
-        start=1,
-    ):
-
-        print(
-            f"🧠 IA: bloque "
-            f"{index}/{total_chunks} "
-            f"| sección: "
-            f"{chunk['section']} "
-            f"| caracteres: "
-            f"{len(chunk['text']):,}"
-        )
-
-        result = await analyze_ai_chunk(
-            chunk,
-            index,
-            total_chunks,
-        )
-
-        if result is not None:
-            results.append(result)
-
-    valid_results = [
-        result
-        for result in results
-        if (
-            result.get("available")
-            and result.get("ai_score")
-            is not None
-        )
-    ]
-
-    if not valid_results:
-
-        return {
-            "available": False,
-            "ai_score": None,
-            "human_score": None,
-            "label": "No disponible",
-            "reasoning": (
-                "No fue posible analizar "
-                "ningún bloque."
-            ),
-            "chunks_analyzed": total_chunks,
-            "chunks_successful": 0,
-            "chunks_failed": total_chunks,
-            "chunks": results,
-        }
-
-    # ========================================================
-    # PROMEDIO PONDERADO POR TEXTO
-    # ========================================================
-
-    total_characters = sum(
-        result["characters"]
-        for result in valid_results
-    )
-
-    if total_characters <= 0:
-
-        global_score = 0.0
-
-    else:
-
-        global_score = (
-            sum(
-                result["ai_score"]
-                * result["characters"]
-                for result in valid_results
-            )
-            / total_characters
-        )
-
-    global_score = max(
-        0.0,
-        min(1.0, global_score),
-    )
-
-    scores = [
-        result["ai_score"]
-        for result in valid_results
-    ]
-
-    # ========================================================
-    # SECCIONES
-    # ========================================================
-
-    section_scores = {}
-
-    for result in valid_results:
-
-        section = result.get(
-            "section",
-            "Documento",
-        )
-
-        if section not in section_scores:
-            section_scores[section] = {
-                "characters": 0,
-                "weighted_score": 0.0,
-                "chunks": 0,
-            }
-
-        section_scores[section][
-            "characters"
-        ] += result["characters"]
-
-        section_scores[section][
-            "weighted_score"
-        ] += (
-            result["ai_score"]
-            * result["characters"]
-        )
-
-        section_scores[section][
-            "chunks"
-        ] += 1
-
-    for section, data in section_scores.items():
-
-        if data["characters"] > 0:
-
-            data["ai_score"] = round(
-                data["weighted_score"]
-                / data["characters"],
-                4,
-            )
-
-        else:
-
-            data["ai_score"] = None
-
-        del data["weighted_score"]
-
-    # ========================================================
-    # RESULTADO
-    # ========================================================
-
-    return {
-        "available": True,
-
-        "ai_score": round(
-            global_score,
-            4,
-        ),
-
-        "human_score": round(
-            1.0 - global_score,
-            4,
-        ),
-
-        "label": (
-            "AI-generated"
-            if global_score > 0.5
-            else "Human-written"
-        ),
-
-        "reasoning": (
-            "Estimación calculada mediante el análisis "
-            f"de {len(valid_results)} bloques académicos "
-            "que cubren el documento completo. "
-            "La puntuación global está ponderada "
-            "por la cantidad de texto analizado."
-        ),
-
-        "chunks_analyzed": total_chunks,
-
-        "chunks_successful": len(
-            valid_results
-        ),
-
-        "chunks_failed": (
-            total_chunks
-            - len(valid_results)
-        ),
-
-        "score_range": {
-            "minimum": round(
-                min(scores),
-                4,
-            ),
-            "maximum": round(
-                max(scores),
-                4,
-            ),
-        },
-
-        "sections": section_scores,
-
-        "chunks": results,
-    }
 
 
 # ============================================================
@@ -1168,6 +954,7 @@ async def analyze_ai_document(
 async def analyze_plagiarism(
     document_content: str,
     db_session=None,
+    previous_ai_report: dict | None = None,
 ):
     """
     Analiza el documento contra la colección Chroma V1.1.
@@ -1179,7 +966,7 @@ async def analyze_plagiarism(
     """
 
     text = _clean_for_embedding(
-        document_content
+        _remove_page_markers(document_content)
     )
 
     if not text:
@@ -1394,8 +1181,18 @@ async def analyze_plagiarism(
         "del documento completo..."
     )
 
+    # El análisis de plagio ya terminó y el modelo MPNet no debe competir con GPT-OSS por RAM.
+    try:
+        from .similarity_engine import unload_model
+        unload_model()
+        collect_garbage("liberación MPNet antes de IA")
+    except Exception as exc:
+        print(f"⚠️ No se pudo liberar MPNet antes de IA: {exc}")
+    log_memory("antes del análisis IA")
+
     ai_report = await analyze_ai_document(
-        text
+        document_content,
+        previous_report=previous_ai_report,
     )
 
     # ========================================================
@@ -1435,12 +1232,12 @@ async def analyze_plagiarism(
             ),
 
             "interpretation": (
-                "evidence coverage, not "
-                "probability of plagiarism"
+                "El porcentaje representa cobertura de fragmentos con evidencia fuerte de coincidencia; "
+                "no es una probabilidad matemática de plagio."
             ),
 
             "ai_analysis_scope": (
-                "full_document"
+                "full_document_chapter_segment_cross_analysis"
             ),
 
             "ai_chunking": (
@@ -1453,6 +1250,10 @@ async def analyze_plagiarism(
 
             "ai_max_chunk_chars": (
                 AI_MAX_CHARS
+            ),
+
+            "ai_method": (
+                "deterministic_linguistic_metrics_plus_local_llm"
             ),
         },
     }

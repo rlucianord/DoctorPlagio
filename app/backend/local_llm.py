@@ -25,6 +25,8 @@ from typing import Any
 from huggingface_hub import hf_hub_download
 from llama_cpp import Llama
 
+from .memory_monitor import log_memory
+
 
 # ============================================================
 # PROYECTO
@@ -72,7 +74,7 @@ MODEL_PATH = Path(
 N_CTX = int(
     os.environ.get(
         "LOCAL_LLM_CONTEXT",
-        "8192",
+        "4096",
     )
 )
 
@@ -83,7 +85,7 @@ N_THREADS_ENV = os.environ.get(
 N_THREADS = (
     int(N_THREADS_ENV)
     if N_THREADS_ENV
-    else None
+    else min(6, os.cpu_count() or 4)
 )
 
 N_GPU_LAYERS = int(
@@ -96,7 +98,7 @@ N_GPU_LAYERS = int(
 N_BATCH = int(
     os.environ.get(
         "LOCAL_LLM_BATCH",
-        "512",
+        "128",
     )
 )
 
@@ -257,6 +259,7 @@ def get_model() -> Llama:
     model_path = ensure_model_exists()
 
     print()
+    log_memory("antes de cargar GPT-OSS")
     print("🧠 Cargando modelo local mediante llama.cpp...")
     print(f"🧠 Modelo: {model_path.name}")
     print(f"🧠 Ruta: {model_path}")
@@ -277,6 +280,7 @@ def get_model() -> Llama:
         verbose=False,
     )
 
+    log_memory("después de cargar GPT-OSS (las páginas del modelo pueden cargarse bajo demanda)")
     print("✅ Modelo local cargado correctamente.")
 
     return _llm
@@ -296,6 +300,7 @@ def generate(
     Genera texto utilizando el modelo local.
     """
 
+    log_memory("antes de inferencia GPT-OSS")
     llm = get_model()
 
     effective_seed = (
