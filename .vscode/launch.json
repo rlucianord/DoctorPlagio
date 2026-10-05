@@ -2,12 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "DoctorPlagio - Debug",
+            "name": "DoctorPlagio - Flask Debug",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\app\\backend\\main.py",
+            "module": "flask",
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
+            "env": {
+                "FLASK_APP": "app.backend.main:app",
+                "FLASK_ENV": "development",
+                "PYTHONUNBUFFERED": "1"
+            },
+            "args": [
+                "run",
+                "--host=127.0.0.1",
+                "--port=5000"
+            ],
+            "jinja": true,
             "justMyCode": true
         }
     ]

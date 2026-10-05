@@ -2,14 +2,13 @@
 from __future__ import annotations
 import asyncio
 import hashlib
-import json
 import re
 from collections import defaultdict
 from typing import Any
 
 from .local_llm import generate_json
 from .ai_metrics import calculate_metrics, merge_metrics
-from .ai_prompts import segment_prompt, chapter_prompt, document_prompt
+from .ai_prompts import segment_prompt, document_prompt
 from .memory_monitor import log_memory, collect_garbage
 
 PAGE_RE = re.compile(r"\[\[PAGE:(\d+)\]\]")
@@ -29,66 +28,70 @@ def _chapter_name(section: str, current: str) -> str:
     return current
 
 def _confidence(results: list[dict], chars: int) -> str:
-    if len(results) < 2 or chars < 5000:
-        return "bajo"
-    scores = [float(x.get("ai_score", 0)) for x in results if x.get("available")]
-    if not scores:
+    scores = [float(x.get("ai_score", 0)) for x in results if x.get("available") and x.get("ai_score") is not None]
+    if len(scores) < 2 or chars < 5000:
         return "bajo"
     spread = max(scores) - min(scores)
-    if len(results) >= 5 and spread < 0.25:
+    if len(scores) >= 5 and spread < 0.25:
         return "alto"
-    if len(results) >= 3:
+    if len(scores) >= 3:
         return "medio"
     return "bajo"
 
 def _text_key(text: str) -> str:
     return hashlib.sha256(_strip_pages(text).encode("utf-8")).hexdigest()
 
-
 def _candidate_priority(metrics: dict) -> float:
-    """Cheap triage score; used only to choose LLM samples, never as AI proof."""
     cv = float(metrics.get("sentence_length_cv", 0.0))
     rep2 = float(metrics.get("repeated_bigram_rate", 0.0))
     rep3 = float(metrics.get("repeated_trigram_rate", 0.0))
     conn = float(metrics.get("connector_total", 0.0)) / max(float(metrics.get("sentences", 0)), 1.0)
     lex = float(metrics.get("lexical_diversity", 0.0))
-    # These are weak linguistic signals only. They decide sampling, not classification.
     uniformity = max(0.0, 1.0 - min(cv, 1.0))
     return round(0.35 * uniformity + 0.25 * min(rep2 * 20, 1.0) +
                  0.20 * min(rep3 * 40, 1.0) + 0.10 * min(conn * 5, 1.0) +
                  0.10 * max(0.0, 1.0 - lex), 4)
 
-
 def _select_llm_segments(prepared: list[dict], previous_keys: set[str] | None = None) -> set[int]:
-    """Select bounded representative segments, prioritizing changed content."""
+    """Selecciona muestras de forma estratificada por capítulo y por tamaño."""
     if not prepared:
         return set()
     previous_keys = previous_keys or set()
-    max_calls = min(8, max(2, round(len(prepared) ** 0.5) + 1))
-    ranked = []
-    for i, c in enumerate(prepared):
-        text = _strip_pages(c.get("text", ""))
-        key = _text_key(c.get("text", ""))
-        priority = _candidate_priority(calculate_metrics(text))
-        if previous_keys and key not in previous_keys:
-            priority += 0.75  # changed/new content gets priority
-        ranked.append((i, priority))
-    ranked.sort(key=lambda x: x[1], reverse=True)
 
-    selected: set[int] = set()
-    # Guarantee at least one representative segment per chapter while budget allows.
+    # Mantiene el consumo de GPT-OSS acotado, pero distribuye las inferencias
+    # entre capítulos. Cada capítulo recibe al menos una muestra cuando el
+    # presupuesto lo permite.
     chapters = defaultdict(list)
     for i, c in enumerate(prepared):
         chapters[c.get("chapter", "Documento")].append(i)
+
+    budget = min(12, max(4, round(len(prepared) ** 0.5) + len(chapters)))
+    ranked = []
+    for i, c in enumerate(prepared):
+        text = _strip_pages(c.get("text", ""))
+        key = _text_key(text)
+        priority = _candidate_priority(calculate_metrics(text))
+        if previous_keys and key not in previous_keys:
+            priority += 0.75
+        priority += min(len(text) / 9000.0, 1.0) * 0.15
+        ranked.append((i, priority))
+
+    rank_map = dict(ranked)
+    selected = set()
+
+    # Primero: al menos un bloque por capítulo.
     for indices in chapters.values():
-        best = max(indices, key=lambda i: dict(ranked).get(i, 0.0))
+        best = max(indices, key=lambda i: rank_map.get(i, 0.0))
         selected.add(best)
-        if len(selected) >= max_calls:
+        if len(selected) >= budget:
             break
-    for i, _ in ranked:
-        if len(selected) >= max_calls:
+
+    # Después: bloques adicionales proporcionalmente a la disponibilidad.
+    for i, _ in sorted(ranked, key=lambda x: x[1], reverse=True):
+        if len(selected) >= budget:
             break
         selected.add(i)
+
     return selected
 
 def _normalize_result(data: dict[str, Any], metrics: dict) -> dict:
@@ -122,54 +125,73 @@ async def analyze_segment(chunk: dict, number: int, total: int, call_llm: bool =
     pages = _pages(raw)
     section = chunk.get("section", "Documento")
     chapter = chunk.get("chapter", "Documento")
-    if cached is not None:
+
+    if cached is not None and cached.get("ai_score") is not None:
         reused = dict(cached)
-        reused.update({"segment": number, "chapter": chapter, "section": section, "pages": pages, "characters": len(text), "text_preview": text[:350], "reused_from_previous": True, "metrics": metrics})
+        reused.update({
+            "segment": number, "chapter": chapter, "section": section,
+            "pages": pages, "characters": len(text), "text_preview": text[:350],
+            "reused_from_previous": True, "metrics": metrics
+        })
         return reused
+
     prompt = segment_prompt(text, section, chapter, metrics)
     print(f"🧠 IA: segmento {number}/{total} | capítulo: {chapter} | sección: {section} | caracteres: {len(text):,} | LLM={call_llm}")
+
     if not call_llm:
-        return {"available": True, "segment": number, "chapter": chapter, "section": section, "pages": pages, "characters": len(text), "metrics": metrics, "ai_score": None, "human_score": None, "label": "no_evaluado", "reused_from_previous": False, "sampling": True, "reasoning": "Segmento no seleccionado para inferencia local; se conserva para cobertura y análisis global.", "text_preview": text[:350], "evidence_sentences": []}
+        return {
+            "available": True, "segment": number, "chapter": chapter, "section": section,
+            "pages": pages, "characters": len(text), "metrics": metrics,
+            "ai_score": None, "human_score": None, "label": "no_evaluado",
+            "reused_from_previous": False, "sampling": True,
+            "reasoning": "Segmento no seleccionado para inferencia local; se conserva para cobertura.",
+            "text_preview": text[:350], "evidence_sentences": []
+        }
+
     try:
         data = await asyncio.to_thread(generate_json, prompt, 700, 0.0, 42)
         if not isinstance(data, dict) or "error" in data:
-            return {"available": False, "segment": number, "chapter": chapter, "section": section, "pages": pages, "characters": len(text), "metrics": metrics, "reasoning": "El modelo no devolvió JSON válido."}
+            return {
+                "available": False, "segment": number, "chapter": chapter,
+                "section": section, "pages": pages, "characters": len(text),
+                "metrics": metrics, "reasoning": "El modelo no devolvió JSON válido."
+            }
         result = _normalize_result(data, metrics)
-        result.update({"segment": number, "chapter": chapter, "section": section, "pages": pages, "characters": len(text), "text_preview": text[:350]})
+        result.update({
+            "segment": number, "chapter": chapter, "section": section,
+            "pages": pages, "characters": len(text), "text_preview": text[:350]
+        })
         return result
     except Exception as exc:
-        return {"available": False, "segment": number, "chapter": chapter, "section": section, "pages": pages, "characters": len(text), "metrics": metrics, "reasoning": str(exc)}
+        return {
+            "available": False, "segment": number, "chapter": chapter,
+            "section": section, "pages": pages, "characters": len(text),
+            "metrics": metrics, "reasoning": str(exc)
+        }
 
-async def _chapter_analysis(chapter: str, segments: list[dict]) -> dict:
-    valid = [s for s in segments if s.get("available")]
-    chars = sum(s.get("characters", 0) for s in valid)
-    metrics = merge_metrics([s.get("metrics", {}) for s in valid])
-    pages = sorted({p for s in segments for p in s.get("pages", [])})
-    pages_text = f"{pages[0]}–{pages[-1]}" if pages else "No disponible"
-    summaries = [{
-        "segment": s.get("segment"), "section": s.get("section"), "pages": s.get("pages"),
-        "characters": s.get("characters"), "ai_score": s.get("ai_score"),
-        "label": s.get("label"), "ai_signals": s.get("ai_signals", []),
-        "human_signals": s.get("human_signals", []), "reasoning": s.get("reasoning", "")
-    } for s in valid]
-    try:
-        data = await asyncio.to_thread(generate_json, chapter_prompt(chapter, pages_text, metrics, summaries), 1600, 0.0, 42)
-        if isinstance(data, dict) and "error" not in data:
-            score = max(0.0, min(1.0, float(data.get("ai_score", 0))))
-            return {"chapter": chapter, "pages": pages, "characters": chars, "ai_score": round(score,4), "human_score": round(1-score,4), "confidence": data.get("confidence", _confidence(valid, chars)), "main_patterns": data.get("main_patterns", []), "ai_signals": data.get("ai_signals", []), "human_signals": data.get("human_signals", []), "page_evidence": data.get("page_evidence", []), "reasoning": data.get("reasoning", ""), "metrics": metrics, "segments": segments}
-    except Exception as exc:
-        pass
-    score = sum(s["ai_score"]*s["characters"] for s in valid)/chars if chars else 0.0
-    return {"chapter": chapter, "pages": pages, "characters": chars, "ai_score": round(score,4), "human_score": round(1-score,4), "confidence": _confidence(valid, chars), "main_patterns": [], "ai_signals": [], "human_signals": [], "page_evidence": pages, "reasoning": "Resultado agregado de los segmentos; análisis narrativo de capítulo no disponible.", "metrics": metrics, "segments": segments}
+def _aggregate_scores(items: list[dict]) -> tuple[float | None, int, int]:
+    """Promedio ponderado por caracteres de los bloques realmente evaluados."""
+    valid = [x for x in items if x.get("ai_score") is not None]
+    evaluated_chars = sum(int(x.get("characters", 0)) for x in valid)
+    total_chars = sum(int(x.get("characters", 0)) for x in items)
+    if not valid or evaluated_chars <= 0:
+        return None, evaluated_chars, total_chars
+    score = sum(float(x["ai_score"]) * int(x.get("characters", 0)) for x in valid) / evaluated_chars
+    return round(score, 4), evaluated_chars, total_chars
 
 async def analyze_ai_document_v2(text: str, academic_chunks_func, previous_report: dict | None = None) -> dict:
     log_memory("inicio análisis IA")
     clean = text.strip()
     if not clean:
-        return {"available": False, "ai_score": None, "human_score": None, "label": "No disponible", "reasoning": "El documento no contiene texto.", "chapters": [], "segments": []}
+        return {
+            "available": False, "ai_score": None, "human_score": None,
+            "label": "No disponible", "reasoning": "El documento no contiene texto.",
+            "chapters": [], "segments": []
+        }
 
     chunks = academic_chunks_func(clean)
     log_memory(f"después de academic_chunks: {len(chunks)} bloques")
+
     current = "Documento"
     prepared = []
     for c in chunks:
@@ -178,84 +200,158 @@ async def analyze_ai_document_v2(text: str, academic_chunks_func, previous_repor
         item["chapter"] = current
         prepared.append(item)
 
-    # Reuse segment analyses whose normalized text is unchanged. This is the
-    # main optimization for revised documents.
     cache = {}
     if isinstance(previous_report, dict):
         for old in previous_report.get("segments", []):
-            preview = old.get("text_preview", "")
-            # text_preview is not enough for identity; use a stable key when present.
-            if old.get("text_key"):
+            if old.get("text_key") and old.get("ai_score") is not None:
                 cache[old["text_key"]] = old
 
     selected = _select_llm_segments(prepared, set(cache.keys()))
     segments = []
+
     for i, chunk in enumerate(prepared):
         key = _text_key(chunk.get("text", ""))
         cached = cache.get(key)
-        result = await analyze_segment(chunk, i + 1, len(prepared), call_llm=(i in selected), cached=cached)
+
+        # Un bloque sin cambios se puede reutilizar. Un bloque nuevo debe ser
+        # evaluado si fue seleccionado por el muestreo estratificado.
+        result = await analyze_segment(
+            chunk, i + 1, len(prepared),
+            call_llm=(i in selected),
+            cached=cached
+        )
         result["text_key"] = key
+        result["llm_sampled"] = i in selected
         if i in selected:
             collect_garbage(f"segmento IA {i+1}")
-        result["llm_sampled"] = i in selected
         segments.append(result)
 
-    # If there is no previous report and the document is short, analyze every
-    # segment. For long documents, bounded sampling prevents dozens of 20B calls.
-    llm_results = [s for s in segments if s.get("available") and s.get("ai_score") is not None]
     grouped = defaultdict(list)
     for s in segments:
         grouped[s.get("chapter", "Documento")].append(s)
+
     chapters = []
     for name, segs in grouped.items():
+        score, evaluated_chars, total_chars = _aggregate_scores(segs)
         valid = [s for s in segs if s.get("ai_score") is not None]
-        chars = sum(s.get("characters", 0) for s in valid)
-        if valid:
-            metrics = merge_metrics([s.get("metrics", {}) for s in valid])
-            score = sum(float(s.get("ai_score", 0)) * s.get("characters", 0) for s in valid) / max(chars, 1)
-        else:
-            metrics = merge_metrics([s.get("metrics", {}) for s in segs])
-            score = 0.0
+        metrics = merge_metrics([s.get("metrics", {}) for s in segs])
         pages = sorted({p for s in segs for p in s.get("pages", [])})
+
+        if score is None:
+            reasoning = "No hay inferencias IA suficientes para calcular un porcentaje de este capítulo."
+        else:
+            reasoning = (
+                "Resultado del capítulo calculado como promedio ponderado por caracteres "
+                "de los bloques evaluados o reutilizados."
+            )
+
         chapters.append({
-            "chapter": name, "pages": pages, "characters": sum(s.get("characters", 0) for s in segs),
-            "ai_score": round(score, 4) if valid else None,
-            "human_score": round(1-score, 4) if valid else None,
-            "confidence": _confidence(valid, chars),
+            "chapter": name,
+            "pages": pages,
+            "characters": total_chars,
+            "evaluated_characters": evaluated_chars,
+            "coverage": round(evaluated_chars / total_chars, 4) if total_chars else 0.0,
+            "ai_score": score,
+            "human_score": round(1 - score, 4) if score is not None else None,
+            "confidence": _confidence(valid, evaluated_chars),
             "main_patterns": [x for s in valid for x in s.get("ai_signals", [])][:8],
             "ai_signals": [x for s in valid for x in s.get("ai_signals", [])][:8],
             "human_signals": [x for s in valid for x in s.get("human_signals", [])][:8],
             "page_evidence": pages,
-            "reasoning": "Agregado ponderado de segmentos evaluados; se redujeron inferencias para controlar consumo de recursos.",
-            "metrics": metrics, "segments": segs
+            "reasoning": reasoning,
+            "metrics": metrics,
+            "segments": segs
         })
 
-    collect_garbage("fin inferencias de segmentos")
+    # Documento: SOLO se agregan capítulos con score real. El peso es el
+    # contenido efectivamente evaluado, no un único bloque seleccionado.
     valid_chapters = [c for c in chapters if c.get("ai_score") is not None]
-    total_chars = sum(c["characters"] for c in valid_chapters)
-    global_score = sum(c["ai_score"] * c["characters"] for c in valid_chapters) / max(total_chars, 1) if valid_chapters else 0.0
+    evaluated_total = sum(c["evaluated_characters"] for c in valid_chapters)
+    document_total = sum(c["characters"] for c in chapters)
+
+    if evaluated_total:
+        global_score = sum(c["ai_score"] * c["evaluated_characters"] for c in valid_chapters) / evaluated_total
+        global_score = round(global_score, 4)
+    else:
+        global_score = None
+
     global_metrics = merge_metrics([c.get("metrics", {}) for c in chapters])
-    chapter_summaries = [{k: c.get(k) for k in ["chapter", "pages", "characters", "ai_score", "human_score", "confidence", "main_patterns", "ai_signals", "human_signals", "page_evidence", "reasoning"]} for c in valid_chapters]
+
+    chapter_summaries = [{
+        "chapter": c["chapter"],
+        "pages": c["pages"],
+        "characters": c["characters"],
+        "evaluated_characters": c["evaluated_characters"],
+        "coverage": c["coverage"],
+        "ai_score": c["ai_score"],
+        "human_score": c["human_score"],
+        "confidence": c["confidence"]
+    } for c in chapters]
+
     try:
-        cross = await asyncio.to_thread(generate_json, document_prompt(chapter_summaries, global_metrics), 1100, 0.0, 42)
+        cross = await asyncio.to_thread(
+            generate_json,
+            document_prompt(chapter_summaries, global_metrics),
+            1100, 0.0, 42
+        )
     except Exception:
         cross = {}
     if not isinstance(cross, dict) or "error" in cross:
         cross = {}
 
-    log_memory("fin análisis IA")
-    return {
-        "available": bool(segments), "ai_score": round(global_score, 4), "human_score": round(1-global_score, 4),
-        "label": "bajo" if global_score < .40 else "intermedio" if global_score < .70 else "alto",
-        "confidence": cross.get("confidence", _confidence(llm_results, total_chars)),
-        "reasoning": cross.get("reasoning", "Estimación ponderada por los segmentos seleccionados y reutilizados."),
-        "characterization": cross.get("characterization", "indeterminado"),
-        "recurring_patterns": cross.get("recurring_patterns", []), "strongest_pages": cross.get("strongest_pages", []),
-        "human_evidence": cross.get("human_evidence", []),
-        "limitations": cross.get("limitations", ["La detección de características lingüísticas no demuestra autoría.", "Los segmentos no seleccionados no recibieron una nueva inferencia del modelo local."]),
-        "segments_analyzed": len(segments), "segments_successful": len(llm_results), "segments_reused": sum(1 for s in segments if s.get("reused_from_previous")),
-        "segments_llm_sampled": sum(1 for s in segments if s.get("llm_sampled")), "chapters_analyzed": len(chapters),
-        "chapters": chapters, "segments": segments, "global_metrics": global_metrics,
-        "methodology": "Métricas lingüísticas determinísticas + muestreo adaptativo de GPT-OSS + reutilización exacta de segmentos sin cambios + agregación ponderada.",
-    }
+    coverage = evaluated_total / document_total if document_total else 0.0
+    llm_results = [s for s in segments if s.get("ai_score") is not None]
 
+    if global_score is None:
+        label = "No disponible"
+        human_score = None
+    else:
+        label = "bajo" if global_score < .40 else "intermedio" if global_score < .70 else "alto"
+        human_score = round(1 - global_score, 4)
+
+    limitations = cross.get("limitations", [])
+    if not isinstance(limitations, list):
+        limitations = []
+    if coverage < 0.70:
+        limitations.append(
+            "La estimación global tiene cobertura parcial: no todo el contenido recibió inferencia directa de GPT-OSS."
+        )
+    limitations.extend([
+        "La detección de características lingüísticas no demuestra autoría.",
+        "Los porcentajes por capítulo y bloque pueden variar según la evidencia lingüística disponible."
+    ])
+    # Quitar duplicados conservando orden.
+    limitations = list(dict.fromkeys(str(x) for x in limitations))
+
+    return {
+        "available": bool(segments),
+        "ai_score": global_score,
+        "human_score": human_score,
+        "label": label,
+        "confidence": cross.get("confidence", _confidence(llm_results, evaluated_total)),
+        "reasoning": (
+            cross.get("reasoning")
+            or "Estimación global calculada a partir de capítulos y bloques evaluados, ponderada por cantidad de contenido."
+        ),
+        "characterization": cross.get("characterization", "indeterminado"),
+        "recurring_patterns": cross.get("recurring_patterns", []),
+        "strongest_pages": cross.get("strongest_pages", []),
+        "human_evidence": cross.get("human_evidence", []),
+        "limitations": limitations,
+        "segments_analyzed": len(segments),
+        "segments_successful": len(llm_results),
+        "segments_reused": sum(1 for s in segments if s.get("reused_from_previous")),
+        "segments_llm_sampled": sum(1 for s in segments if s.get("llm_sampled")),
+        "chapters_analyzed": len(chapters),
+        "evaluated_characters": evaluated_total,
+        "document_characters": document_total,
+        "coverage": round(coverage, 4),
+        "chapters": chapters,
+        "segments": segments,
+        "global_metrics": global_metrics,
+        "methodology": (
+            "Métricas lingüísticas determinísticas + muestreo estratificado de GPT-OSS "
+            "+ reutilización exacta de segmentos sin cambios + agregación jerárquica "
+            "bloque → capítulo → documento, ponderada por caracteres evaluados."
+        ),
+    }

@@ -2,7 +2,7 @@ import os
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",
-    "postgresql://postgres:123456789$@localhost:5432/drplagium"
+    "postgresql://postgres:123456789$@127.0.0.1:5432/drplagium"
 )
 SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-key") # ¡Asegúrate de cambiar esto en producción!
 ALGORITHM = "HS256"
