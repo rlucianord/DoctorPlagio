@@ -20,3 +20,9 @@ __pycache__/
 # Datos temporales
 tmp/
 temp/
+# Ignorar archivos grandes
+*.tsv
+*.csv
+*.zip
+*.tar
+*.gz 
