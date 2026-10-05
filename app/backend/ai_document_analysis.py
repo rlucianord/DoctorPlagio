@@ -100,7 +100,7 @@ def _normalize_result(data: dict[str, Any], metrics: dict) -> dict:
         score = max(0.0, min(1.0, float(score)))
     except (TypeError, ValueError):
         return {"available": False, "error": "ai_score inválido", "metrics": metrics}
-    label = "bajo" if score < .40 else "intermedio" if score < .70 else "alto"
+    label = "bajo" if score < .30 else "intermedio" if score < .70 else "alto"
     return {
         "available": True,
         "ai_score": round(score, 4),
@@ -306,7 +306,7 @@ async def analyze_ai_document_v2(text: str, academic_chunks_func, previous_repor
         label = "No disponible"
         human_score = None
     else:
-        label = "bajo" if global_score < .40 else "intermedio" if global_score < .70 else "alto"
+        label = "bajo" if global_score < .30 else "intermedio" if global_score < .70 else "alto"
         human_score = round(1 - global_score, 4)
 
     limitations = cross.get("limitations", [])
