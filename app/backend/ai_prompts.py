@@ -17,7 +17,9 @@ def segment_prompt(text: str, section: str, chapter: str, metrics: dict) -> str:
 {SYSTEM_RULES}
 
 Analiza este segmento académico como una pieza de evidencia, no como una prueba de autoría.
-Evalúa: uniformidad sintáctica, patrones de redacción, vocabulario, transiciones,
+El CAPÍTULO y la SECCIÓN son únicamente metadata de estructura académica.
+NO los uses como evidencia de IA ni evalúes sus palabras, numeración o formato.
+Evalúa únicamente el contenido redactado que aparece en TEXTO: uniformidad sintáctica, patrones de redacción, vocabulario, transiciones,
 redundancia semántica, señales compatibles con generación automática y señales de
 intervención humana. Usa las métricas calculadas por Python como evidencia cuantitativa.
 
@@ -46,6 +48,8 @@ def chapter_prompt(chapter: str, pages: str, metrics: dict, segment_summaries: l
 {SYSTEM_RULES}
 
 Analiza el capítulo completo a partir de los resultados de sus segmentos.
+El nombre del capítulo y sus secciones son metadata estructural y no evidencia de IA.
+No penalices numeración, títulos académicos, nombres de capítulos o subtítulos.
 Evalúa específicamente: uniformidad sintáctica, patrones repetitivos, vocabulario,
 estructura argumentativa, transiciones, redundancia semántica, contenido institucional,
 fuentes/referencias, señales de generación automática y señales de redacción humana.
@@ -71,7 +75,8 @@ def document_prompt(chapter_summaries: list[dict], global_metrics: dict) -> str:
     return f"""
 {SYSTEM_RULES}
 
-Realiza un análisis transversal del documento. Compara los capítulos para detectar
+Realiza un análisis transversal del documento. Los nombres y numeraciones de capítulos/secciones son metadata y no deben influir en la puntuación.
+Compara únicamente el contenido evaluable de los capítulos para detectar
 arquitecturas argumentativas repetidas, vocabulario y transiciones recurrentes,
 cambios de estilo, inconsistencias, información institucional específica y patrones
 que atraviesan el documento. No confundas redacción uniforme de un manual con IA.

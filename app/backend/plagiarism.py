@@ -619,6 +619,7 @@ def academic_chunks(
                 {
                     "section": heading,
                     "text": chunk_text,
+                    "analysis_text": chunk,
                 }
             )
 
@@ -637,6 +638,7 @@ def academic_chunks(
             {
                 "section": "Documento",
                 "text": chunk,
+                "analysis_text": chunk,
             }
             for chunk in fallback
         ]

@@ -1,37 +1,19 @@
 import asyncio
-
 import io
-
 import re
-
 import os
-
 import sys
-
 from pathlib import Path
-
 from datetime import timedelta
-
 from flask import Flask, request, jsonify, send_file
-
 from sqlalchemy.orm import Session
-
 from .document_versions import fingerprint, document_similarity, sentence_diff, serialize_results, deserialize_results, SAME_DOCUMENT_SIMILARITY
-
 import os
-
 from datetime import timedelta
-
 import pymupdf
-
 from flask import Flask, request, jsonify, send_file
-
 from sqlalchemy.orm import Session
-
 from .document_versions import fingerprint, document_similarity, sentence_diff, serialize_results, deserialize_results, SAME_DOCUMENT_SIMILARITY
-
-
-
 from . import (
 
     models,
@@ -54,12 +36,7 @@ from .database import (
 
 )
 
-
-
 from .reports import build_pdf_report
-
-
-
 from .auth import (
 
     verify_password,
@@ -71,11 +48,6 @@ from .auth import (
     get_current_active_user,
 
 )
-
-
-
-
-
 # ============================================================
 
 # CONFIGURACIÓN DE RUTAS
@@ -933,8 +905,6 @@ if __name__ == "__main__":
     # proceso, lo cual suele interferir con debugpy.
 
     #
-
-
 
     app.run(
 
