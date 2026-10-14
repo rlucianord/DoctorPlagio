@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import List, Optional
 from pathlib import Path
 # --- AJUSTE DE PATH ---
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Float, func, create_engine
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Float, func, create_engine,BigInteger, CHAR
 from sqlalchemy.orm import relationship, sessionmaker
 
 from pydantic import BaseModel, ConfigDict # Importamos ConfigDict
 from . import database
-
+from sqlalchemy.dialects.postgresql import JSONB
 
 # Configuración de Engine
 Base = database.Base
@@ -126,9 +126,39 @@ class SubscriptionBase(BaseModel):
     status: str
     model_config = shared_config
 
+
 class TokenData(BaseModel):
     username: Optional[str] = None
     model_config = shared_config
+
+
+# ==========================================
+# 1.1 MODELO DE ADMINISTRACIÓN DE API KEYS
+# ==========================================
+
+class APIKey(Base):
+    __tablename__ = "api_keys"
+    __table_args__ = {"schema": "public"}
+
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String(100), nullable=False)
+    key_prefix = Column(String(20), nullable=False)
+    key_hash = Column(CHAR(64), nullable=False, unique=True)
+    environment = Column(
+        String(20),
+        nullable=False,
+        default="development",
+    )
+    scopes = Column(JSONB, nullable=False, default=list)
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    last_used_at = Column(DateTime(timezone=True), nullable=True)
+    revoked_at = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
 
 # Crear tablas
 Base.metadata.create_all(bind=engine)

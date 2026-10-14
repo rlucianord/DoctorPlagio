@@ -8,11 +8,10 @@ from datetime import timedelta
 from flask import Flask, request, jsonify, send_file
 from sqlalchemy.orm import Session
 from .document_versions import fingerprint, document_similarity, sentence_diff, serialize_results, deserialize_results, SAME_DOCUMENT_SIMILARITY
-import os
 from datetime import timedelta
 import pymupdf
 from flask import Flask, request, jsonify, send_file
-from sqlalchemy.orm import Session
+import hmac
 from .document_versions import fingerprint, document_similarity, sentence_diff, serialize_results, deserialize_results, SAME_DOCUMENT_SIMILARITY
 from . import (
 
@@ -25,6 +24,8 @@ from . import (
     plagiarism,
 
     database,
+
+   api_keys_auth, 
 
 )
 
@@ -48,6 +49,7 @@ from .auth import (
     get_current_active_user,
 
 )
+from .api_keys_auth import validate_api_key
 # ============================================================
 
 # CONFIGURACIÓN DE RUTAS
@@ -135,6 +137,32 @@ app = Flask(
     static_url_path="/",
 
 )
+
+
+# ============================================================
+# SEGURIDAD GLOBAL DE LA API
+#ApiKey es necesario para  localizar los recursos del proyecto:
+# ============================================================
+
+@app.before_request
+def require_api_key_globally():
+    """
+    Protege globalmente los endpoints de la API.
+    La interfaz web y el login conservan su mecanismo propio.
+    """
+
+    # Permitir la interfaz web y sus archivos estáticos.
+    if request.endpoint == "static" or request.path == "/":
+        return None
+
+    # El login utiliza credenciales de usuario y devuelve su token.
+    # No exponer la API Key de servicio al navegador.
+    if request.path == "/token" and request.method == "POST":
+        return None
+
+    # Las demás rutas deben presentar una API Key válida.
+    return validate_api_key()
+
 
 # ============================================================
 
@@ -803,9 +831,6 @@ def download_report(version_id: int):
         db.close()
 
 
-
-
-
 # ============================================================
 
 # ARRANQUE DIRECTO
@@ -890,21 +915,6 @@ if __name__ == "__main__":
 
     print()
 
-
-
-    # --------------------------------------------------------
-
-    # IMPORTANTE PARA VS CODE DEBUG
-
-    # --------------------------------------------------------
-
-    #
-
-    # use_reloader=False evita que Flask cree un segundo
-
-    # proceso, lo cual suele interferir con debugpy.
-
-    #
 
     app.run(
 

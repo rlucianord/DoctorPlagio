@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_doctorplagio_document_list" model="ir.ui.view">
+        <field name="name">doctorplagio.document.list</field>
+        <field name="model">doctorplagio.document</field>
+        <field name="arch" type="xml">
+            <list string="Documentos">
+                <field name="name"/>
+                <field name="file_name"/>
+                <field name="state"/>
+                <field name="plagiarism_percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doctorplagio_document_form" model="ir.ui.view">
+        <field name="name">doctorplagio.document.form</field>
+        <field name="model">doctorplagio.document</field>
+        <field name="arch" type="xml">
+            <form string="Documento DoctorPlagio">
+                <header>
+                    <button name="action_analyze"
+                            type="object"
+                            string="Analizar documento"
+                            class="oe_highlight"
+                            invisible="state == 'analyzing' or not file_data"/>
+
+                    <button name="action_download_report"
+                            type="object"
+                            string="Descargar informe PDF"
+                            class="btn-secondary"
+                            invisible="state != 'done' or not results_json"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,analyzing,done,error"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="file_name" invisible="not file_name"/>
+                        <field name="file_data" filename="file_name"/>
+                    </group>
+
+                    <group string="Resultado del análisis">
+                        <field name="plagiarism_percentage" readonly="1"/>
+                        <field name="analysis_error"
+                               readonly="1"
+                               invisible="not analysis_error"/>
+                    </group>
+
+                    <!-- El JSON se conserva en el modelo, pero no se muestra al usuario. -->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_doctorplagio_documents" model="ir.actions.act_window">
+        <field name="name">Documentos</field>
+        <field name="res_model">doctorplagio.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_doctorplagio_root" name="DoctorPlagio" sequence="10"/>
+    <menuitem id="menu_doctorplagio_documents"
+              name="Documentos"
+              parent="menu_doctorplagio_root"
+              action="action_doctorplagio_documents"
+              sequence="10"/>
+</odoo>

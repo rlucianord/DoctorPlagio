@@ -566,6 +566,8 @@ def generate(
     """
 
 
+    max_tokens = max(1, min(int(max_tokens), 1200))
+    temperature = max(0.0, min(float(temperature), 1.0))
     log_memory("antes de inferencia GPT-OSS")
 
 
@@ -683,13 +685,9 @@ def generate(
     },
 
 
-    max_tokens=2000,
-
-
-    temperature=0.0,
-
-
-    seed=42,
+    max_tokens=max_tokens,
+        temperature=temperature,
+        seed=effective_seed,
 
 
     )

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="access_doctorplagio_document_user" model="ir.access">
+        <field name="name">DoctorPlagio Document User</field>
+        <field name="model_id" ref="model_doctorplagio_document"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="operation">crud</field>
+    </record>
+</odoo>
