@@ -1,3 +1,4 @@
+
 {
     "name": "DoctorPlagio",
     "version": "20.0.1.0.0",
@@ -9,8 +10,9 @@
     "depends": ["base"],
     "data": [
         "security/access.xml",
-        "views/document_views.xml"
+        "views/document_views.xml",
+        "views/res_config_settings_views.xml",
     ],
     "installable": True,
-    "application": True
+    "application": True,
 }
