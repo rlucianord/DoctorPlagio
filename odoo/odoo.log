@@ -13147,3 +13147,16 @@ PermissionError: [WinError 5] Access is denied: 'C:\\Users\\rluciano\\AppData\\L
 2026-10-14 19:42:18,407 8232 INFO doctorplagio_odoo odoo.addons.base.models.ir_attachment: filestore gc 3 checked, 0 removed
 2026-10-14 19:42:18,465 8232 INFO doctorplagio_odoo odoo.addons.base.models.res_users: GC 'auth_totp.device' delete 0 entries
 2026-10-14 19:42:18,488 8232 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) fully done (#loop 1; done 0; remaining 0; duration 0.34s)
+2026-10-14 19:47:51,881 8232 INFO ? odoo.service.server.ThreadedServer: Initiating shutdown
+2026-10-14 19:47:51,881 8232 INFO ? odoo.service.server.ThreadedServer: Hit CTRL-C again or send a second signal to force the shutdown.
+2026-10-14 19:47:51,881 8232 INFO ? odoo.addons.bus.websocket: Disconnecting 1 websockets
+2026-10-14 19:47:51,885 8232 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 oCRctWFH - [14/Oct/2026 19:41:10] "GET /websocket?version=saas-19.5-1 HTTP/1.1" 101 0 8 0.007 401.461 rw
+2026-10-14 19:47:51,991 8232 INFO ? odoo.sql_db: ConnectionPool(read/write;used=3/count=3/max=64): Closed 6 connections 
+2026-10-14 19:47:59,430 24608 INFO ? odoo: Odoo version 20.0
+2026-10-14 19:47:59,430 24608 INFO ? odoo: Using configuration file at c:\proyecto\doctorplagio\odoo\odoo.conf
+2026-10-14 19:47:59,431 24608 INFO ? odoo: addons paths: NamespacePath(['C:\\PROYECTO\\DoctorPlagio\\Odoo\\odoo\\addons', 'C:\\Users\\rluciano\\AppData\\Local\\OpenERP S.A.\\Odoo\\addons\\20.0', 'c:\\proyecto\\doctorplagio\\odoo\\addons', 'c:\\proyecto\\doctorplagio\\odoo\\custom_addons'])
+2026-10-14 19:47:59,431 24608 INFO ? odoo: database: odoo@localhost:5432
+2026-10-14 19:47:59,431 24608 WARNING ? odoo: Python 3.15 is not officially supported, please use Python 3.14 instead
+2026-10-14 19:48:00,327 24608 INFO ? odoo.service.server.ThreadedServer.cron0: Alive
+2026-10-14 19:48:00,328 24608 INFO ? odoo.service.server: HTTP service running on 127.0.0.1:8069
+2026-10-14 19:48:00,328 24608 INFO ? odoo.service.server.ThreadedServer.cron1: Alive
