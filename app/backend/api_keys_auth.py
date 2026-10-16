@@ -7,7 +7,7 @@ from sqlalchemy import text
 from flask import request, jsonify
 
 from .database import engine
-
+import logging
 
 def validate_api_key():
     """
@@ -15,6 +15,7 @@ def validate_api_key():
     Devuelve None si es válida; una respuesta HTTP si no lo es.
     """
     supplied_key = request.headers.get("X-API-Key", "").strip()
+    print (supplied_key)
 
     if not supplied_key or "." not in supplied_key:
         return jsonify({
@@ -83,8 +84,9 @@ def validate_api_key():
         return None
 
     except Exception:
-        # No revelar detalles de PostgreSQL al cliente.
-        print("Error interno al validar la API Key.")
+        logging.getLogger(__name__).exception(
+            "Error interno al validar la API Key de DoctorPlagio"
+        )
         return jsonify({
             "error": "No fue posible validar las credenciales"
         }), 503

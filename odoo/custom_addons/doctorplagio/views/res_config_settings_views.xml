@@ -1,37 +1,32 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="res_config_settings_view_form_doctorplagio"
-            model="ir.ui.view">
+        model="ir.ui.view">
         <field name="name">res.config.settings.view.form.doctorplagio</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id"
-               ref="base.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app name="doctorplagio"
-                     string="DoctorPlagio"
-                     groups="base.group_system">
-
+                    string="DoctorPlagio"
+                    groups="base.group_system">
                     <block title="Conexión con el backend"
-                           name="doctorplagio_backend_settings">
-
+                        name="doctorplagio_backend_settings">
                         <setting string="URL del backend"
-                                 help="Dirección del servicio de análisis documental.">
+                            help="Dirección del servicio de análisis documental.">
                             <field name="doctorplagio_backend_url"
-                                   placeholder="http://127.0.0.1:5000"/>
+                                placeholder="http://127.0.0.1:5000" />
                         </setting>
-
                         <setting string="API Key"
-                                 help="Clave privada para autenticar las solicitudes al backend.">
+                            help="Clave privada para autenticar las solicitudes al backend.">
                             <field name="doctorplagio_api_key"
-                                   password="True"
-                                   placeholder="Introduce la API Key"/>
+                                password="True"
+                                placeholder="Introduce la API Key" />
                         </setting>
-
                     </block>
                 </app>
             </xpath>
         </field>
     </record>
 </odoo>
+ 

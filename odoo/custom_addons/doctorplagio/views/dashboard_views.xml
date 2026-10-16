@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_doctorplagio_dashboard_form" model="ir.ui.view">
+        <field name="name">doctorplagio.dashboard.form</field>
+        <field name="model">doctorplagio.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Panel de control DoctorPlagio" create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Panel de control DoctorPlagio</h1>
+                        <div class="text-muted">Resumen de los documentos registrados en Odoo.</div>
+                    </div>
+
+                    <div class="row g-3 mt-3 mb-4">
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <button name="action_open_queued" type="object" class="btn btn-outline-warning w-100 p-3 text-start">
+                                <div class="text-muted">DOCUMENTOS EN COLA</div>
+                                <div class="display-4"><field name="documents_queued" nolabel="1"/></div>
+                                <div>Esperando procesamiento</div>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <button name="action_open_analyzing" type="object" class="btn btn-outline-info w-100 p-3 text-start">
+                                <div class="text-muted">EN ANÁLISIS</div>
+                                <div class="display-4"><field name="documents_analyzing" nolabel="1"/></div>
+                                <div>Procesándose actualmente</div>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <button name="action_open_done" type="object" class="btn btn-outline-success w-100 p-3 text-start">
+                                <div class="text-muted">ANALIZADOS</div>
+                                <div class="display-4"><field name="documents_done" nolabel="1"/></div>
+                                <div>Análisis completados</div>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <button name="action_open_error" type="object" class="btn btn-outline-danger w-100 p-3 text-start">
+                                <div class="text-muted">CON ERROR</div>
+                                <div class="display-4"><field name="documents_error" nolabel="1"/></div>
+                                <div>Requieren revisión</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <button name="action_open_all" type="object" class="btn btn-light border w-100 p-3 text-start">
+                                <span class="fa fa-files-o me-2" aria-hidden="true"/>Total de documentos
+                                <strong class="float-end"><field name="documents_total" nolabel="1"/></strong>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <button name="action_open_draft" type="object" class="btn btn-light border w-100 p-3 text-start">
+                                <span class="fa fa-file-o me-2" aria-hidden="true"/>Borradores
+                                <strong class="float-end"><field name="documents_draft" nolabel="1"/></strong>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Nota operativa:</strong> los contadores reflejan los documentos almacenados en Odoo.
+                        Seleccione una tarjeta para abrir los documentos correspondientes. Si el servicio externo
+                        termina el análisis pero el documento sigue en cola, revise el trabajo de análisis y los
+                        registros del conector.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_doctorplagio_dashboard" model="ir.actions.act_window">
+        <field name="name">Panel de control</field>
+        <field name="res_model">doctorplagio.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="doctorplagio_dashboard_record"/>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_doctorplagio_dashboard"
+              name="Panel de control"
+              parent="menu_doctorplagio_root"
+              action="action_doctorplagio_dashboard"
+              sequence="1"/>
+</odoo>

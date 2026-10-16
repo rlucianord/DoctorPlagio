@@ -9,6 +9,9 @@
                 <field name="file_name"/>
                 <field name="state"/>
                 <field name="plagiarism_percentage"/>
+                <field name="copy_paste_percentage"/>
+                <field name="copy_paste_evidence_count"/>
+                <field name="ai_coverage_percentage"/>
             </list>
         </field>
     </record>
@@ -24,32 +27,64 @@
                             string="Analizar documento"
                             class="oe_highlight"
                             invisible="state == 'analyzing' or not file_data"/>
-
                     <button name="action_download_report"
                             type="object"
                             string="Descargar informe PDF"
                             class="btn-secondary"
                             invisible="state != 'done' or not results_json"/>
-
-                    <field name="state"
-                           widget="statusbar"
+                    <field name="state" widget="statusbar"
                            statusbar_visible="draft,analyzing,done,error"/>
                 </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="file_name" invisible="not file_name"/>
-                        <field name="file_data" filename="file_name"/>
+                        <group string="Documento">
+                            <field name="name"/>
+                            <field name="file_name" invisible="not file_name"
+                                   readonly="state == 'done'"/>
+                            <field name="file_data" filename="file_name"
+                                   readonly="state == 'done'"/>
+                        </group>
+                        <group string="Estado del servicio">
+                            <field name="backend_document_id" invisible="not backend_document_id"/>
+                            <field name="backend_version_id" invisible="not backend_version_id"/>
+                            <field name="analysis_error" readonly="1"
+                                   invisible="not analysis_error"/>
+                            <field name="analysis_note" readonly="1"
+                                   invisible="not analysis_note"/>
+                        </group>
                     </group>
 
-                    <group string="Resultado del análisis">
-                        <field name="plagiarism_percentage" readonly="1"/>
-                        <field name="analysis_error"
-                               readonly="1"
-                               invisible="not analysis_error"/>
+                    <group string="Resumen de coincidencias">
+                        <group>
+                            <field name="plagiarism_percentage" readonly="1"/>
+                            <field name="copy_paste_percentage" readonly="1"/>
+                            <field name="copy_paste_message" readonly="1"
+                                   invisible="not copy_paste_message"/>
+                        </group>
+                        <group>
+                            <field name="copy_paste_sources_count" readonly="1"/>
+                            <field name="copy_paste_evidence_count" readonly="1"/>
+                        </group>
                     </group>
 
-                    <!-- El JSON se conserva en el modelo, pero no se muestra al usuario. -->
+                    <group string="Análisis de IA">
+                        <group>
+                            <field name="ai_analysis_available" readonly="1"/>
+                            <field name="ai_result_label" readonly="1"
+                                   invisible="not ai_result_label"/>
+                        </group>
+                        <group>
+                            <field name="ai_score_percentage" readonly="1"/>
+                            <field name="ai_coverage_percentage" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'done'">
+                        Los porcentajes de similitud general y Copy/Paste son métricas diferentes.
+                        La cobertura de IA indica cuánto contenido pudo evaluarse; no es una
+                        prueba concluyente de autoría.
+                    </div>
                 </sheet>
             </form>
         </field>
