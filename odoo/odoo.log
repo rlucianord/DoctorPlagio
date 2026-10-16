@@ -15159,3 +15159,7 @@ AssertionError
 2026-10-16 02:08:54,620 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:08:54] "POST /web/dataset/call_kw/doctorplagio.document/web_read#doctorplagio.document.web_read HTTP/1.1" 200 68198 4 0.012 0.041 rw
 2026-10-16 02:09:35,152 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
 2026-10-16 02:09:35,199 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.05s)
+2026-10-16 02:10:35,348 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:10:35,425 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.08s)
+2026-10-16 02:11:37,288 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:11:37,326 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.04s)
