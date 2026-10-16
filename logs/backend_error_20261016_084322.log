@@ -1,0 +1,374 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.20.47:5000
+Press CTRL+C to quit
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /assets/text-analysis.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /assets/ai-detection.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /assets/report.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /script.js HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 08:43:38] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET /assets/text-analysis.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET /styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET /assets/ai-detection.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET /assets/report.svg HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 08:43:44] "GET /script.js HTTP/1.1" 304 -
+Error interno al validar la API Key de DoctorPlagio
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.InsufficientPrivilege: permission denied for table api_keys
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\app\backend\api_keys_auth.py", line 42, in validate_api_key
+    record = conn.execute(
+             ~~~~~~~~~~~~^
+        text("""
+        ^^^^^^^^
+    ...<15 lines>...
+        },
+        ^^
+    ).first()
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.InsufficientPrivilege) permission denied for table api_keys
+
+[SQL: 
+                    SELECT id, key_hash
+                    FROM public.api_keys
+                    WHERE key_prefix = %(prefix)s
+                      AND environment = %(environment)s
+                      AND is_active = TRUE
+                      AND revoked_at IS NULL
+                      AND (
+                          expires_at IS NULL
+                          OR expires_at > NOW()
+                      )
+                    LIMIT 1
+                ]
+[parameters: {'prefix': 'dp_dev_3560b746', 'environment': 'development'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+127.0.0.1 - - [16/Oct/2026 09:02:13] "POST /analyze HTTP/1.1" 503 -
+Error interno al validar la API Key de DoctorPlagio
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.InsufficientPrivilege: permission denied for table api_keys
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\app\backend\api_keys_auth.py", line 42, in validate_api_key
+    record = conn.execute(
+             ~~~~~~~~~~~~^
+        text("""
+        ^^^^^^^^
+    ...<15 lines>...
+        },
+        ^^
+    ).first()
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.InsufficientPrivilege) permission denied for table api_keys
+
+[SQL: 
+                    SELECT id, key_hash
+                    FROM public.api_keys
+                    WHERE key_prefix = %(prefix)s
+                      AND environment = %(environment)s
+                      AND is_active = TRUE
+                      AND revoked_at IS NULL
+                      AND (
+                          expires_at IS NULL
+                          OR expires_at > NOW()
+                      )
+                    LIMIT 1
+                ]
+[parameters: {'prefix': 'dp_dev_3560b746', 'environment': 'development'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+127.0.0.1 - - [16/Oct/2026 09:08:19] "POST /analyze HTTP/1.1" 503 -
+Error interno al validar la API Key de DoctorPlagio
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.InsufficientPrivilege: permission denied for table api_keys
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\app\backend\api_keys_auth.py", line 42, in validate_api_key
+    record = conn.execute(
+             ~~~~~~~~~~~~^
+        text("""
+        ^^^^^^^^
+    ...<15 lines>...
+        },
+        ^^
+    ).first()
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.InsufficientPrivilege) permission denied for table api_keys
+
+[SQL: 
+                    SELECT id, key_hash
+                    FROM public.api_keys
+                    WHERE key_prefix = %(prefix)s
+                      AND environment = %(environment)s
+                      AND is_active = TRUE
+                      AND revoked_at IS NULL
+                      AND (
+                          expires_at IS NULL
+                          OR expires_at > NOW()
+                      )
+                    LIMIT 1
+                ]
+[parameters: {'prefix': 'dp_dev_3560b746', 'environment': 'development'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+127.0.0.1 - - [16/Oct/2026 09:26:22] "POST /analyze HTTP/1.1" 503 -
+Error interno al validar la API Key de DoctorPlagio
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.InsufficientPrivilege: permission denied for table api_keys
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\app\backend\api_keys_auth.py", line 75, in validate_api_key
+    conn.execute(
+    ~~~~~~~~~~~~^
+        text("""
+        ^^^^^^^^
+    ...<4 lines>...
+        {"id": record.id},
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\PROYECTO\DoctorPlagio\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.InsufficientPrivilege) permission denied for table api_keys
+
+[SQL: 
+                    UPDATE public.api_keys
+                    SET last_used_at = NOW()
+                    WHERE id = %(id)s
+                ]
+[parameters: {'id': 2}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+127.0.0.1 - - [16/Oct/2026 09:33:22] "POST /analyze HTTP/1.1" 503 -

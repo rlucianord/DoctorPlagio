@@ -1,0 +1,25 @@
+🔎 PLAGIARISM.PY CARGADO: C:\PROYECTO\DoctorPlagio\app\backend\plagiarism.py
+🔎 ASYNCIO DISPONIBLE: <module 'asyncio' from 'C:\\Users\\rluciano\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+======================================================================
+🚀 DOCTORPLAGIO
+======================================================================
+🛠️ Verificando tablas de base de datos...
+✅ Tablas verificadas.
+
+🌐 Servidor:
+   http://127.0.0.1:5000
+
+🧠 Motor IA:
+   GPT-OSS 20B / llama.cpp
+   llama.cpp
+
+🗃️ Base de datos:
+   PostgreSQL / SQLAlchemy
+
+🔎 Plagio:
+   ChromaDB + motor híbrido
+======================================================================
+
+ * Serving Flask app 'main'
+ * Debug mode: on

@@ -23,6 +23,11 @@
                                 password="True"
                                 placeholder="Introduce la API Key" />
                         </setting>
+                        <setting string="request_timeout"
+                            help="Configurar el tiempo de espera para las solicitudes al backend.">
+                            <field name="doctorplagio_request_timeout"
+                                placeholder="Introduce el tiempo de espera en segundos" />
+                        </setting>
                     </block>
                 </app>
             </xpath>
