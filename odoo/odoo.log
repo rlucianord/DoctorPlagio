@@ -14952,3 +14952,210 @@ lxml.etree.XMLSyntaxError: XML declaration allowed only at the start of the docu
 2026-10-16 02:04:19,732 19344 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:02:08] "GET /websocket?version=saas-19.5-1 HTTP/1.1" 101 0 8 0.134 131.135 rw
 2026-10-16 02:04:19,841 19344 INFO ? odoo.sql_db: ConnectionPool(read/write;used=3/count=3/max=64): Closed 9 connections 
 2026-10-16 02:04:19,841 19344 INFO ? odoo.service.server.ThreadedServer.cron0: Max age (0s) reached, recycling pg connection
+2026-10-16 02:04:32,112 35256 INFO ? odoo: Odoo version 20.0
+2026-10-16 02:04:32,113 35256 INFO ? odoo: Using configuration file at c:\proyecto\doctorplagio\odoo\odoo.conf
+2026-10-16 02:04:32,113 35256 INFO ? odoo: addons paths: NamespacePath(['C:\\PROYECTO\\DoctorPlagio\\Odoo\\odoo\\addons', 'C:\\Users\\rluciano\\AppData\\Local\\OpenERP S.A.\\Odoo\\addons\\20.0', 'c:\\proyecto\\doctorplagio\\odoo\\addons', 'c:\\proyecto\\doctorplagio\\odoo\\custom_addons'])
+2026-10-16 02:04:32,113 35256 INFO ? odoo: database: odoo@localhost:5432
+2026-10-16 02:04:32,113 35256 WARNING ? odoo: Python 3.15 is not officially supported, please use Python 3.14 instead
+2026-10-16 02:04:33,015 35256 INFO ? odoo.service.server.ThreadedServer.cron0: Alive
+2026-10-16 02:04:33,015 35256 INFO ? odoo.service.server: HTTP service running on 127.0.0.1:8069
+2026-10-16 02:04:33,019 35256 INFO ? odoo.service.server.ThreadedServer.cron1: Alive
+2026-10-16 02:04:33,474 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 1 modules...
+2026-10-16 02:04:33,483 35256 INFO doctorplagio_odoo odoo.modules.loading: 1 modules loaded in 0.01s, 0 queries (+0 extra)
+2026-10-16 02:04:33,503 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 17 modules...
+2026-10-16 02:04:34,235 35256 WARNING doctorplagio_odoo odoo.addons.mail.controllers.attachment: markdown2 is not installed, markdown will not be rendered
+2026-10-16 02:04:34,340 35256 INFO doctorplagio_odoo odoo.modules.loading: 17 modules loaded in 0.84s, 0 queries (+0 extra)
+2026-10-16 02:04:34,511 35256 INFO doctorplagio_odoo odoo.tools.version_tag_reset: Detected tp_versions_used at offset 410, reset enabled
+2026-10-16 02:04:34,519 35256 INFO doctorplagio_odoo odoo.modules.loading: Modules loaded.
+2026-10-16 02:04:34,568 35256 INFO doctorplagio_odoo odoo.registry: Registry loaded in 1.390s
+2026-10-16 02:04:34,576 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_http: Generating routing map for key None
+2026-10-16 02:04:37,869 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:37] "GET /odoo/apps HTTP/1.1" 200 4360 106 0.198 4.505 rw
+2026-10-16 02:04:38,161 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "GET /web/webclient/load_menus HTTP/1.1" 200 24225 19 0.066 0.096 rw
+2026-10-16 02:04:38,402 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "GET /web/manifest.webmanifest HTTP/1.1" 200 386 6 0.015 0.255 rw
+2026-10-16 02:04:38,827 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "GET /web/image?model=res.users&field=avatar_128&id=2 HTTP/1.1" 304 0 7 0.029 0.56 rw
+2026-10-16 02:04:38,837 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "GET /bus/websocket_worker_bundle?v=saas-19.5-1 HTTP/1.1" 304 0 5 0.032 0.619 rw
+2026-10-16 02:04:38,839 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "POST /web/dataset/call_kw/ir.module.module/search_panel_select_range#ir.module.module.search_panel_select_range HTTP/1.1" 200 188 6 0.067 0.502 rw
+2026-10-16 02:04:38,937 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "POST /web/dataset/call_kw/ir.module.module/get_views#ir.module.module.get_views HTTP/1.1" 200 28919 26 0.192 0.499 rw
+2026-10-16 02:04:38,950 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:38] "POST /web/dataset/call_kw/ir.module.module/check_module_update#ir.module.module.check_module_update HTTP/1.1" 200 44 3 0.014 0.088 rw
+2026-10-16 02:04:39,363 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:39] "POST /web/dataset/call_kw/ir.module.module/search_panel_select_range#ir.module.module.search_panel_select_range HTTP/1.1" 200 827 44 0.475 0.468 rw
+2026-10-16 02:04:39,746 35256 INFO ? odoo.addons.bus.bus_dispatcher: Bus._listener_loop listen imbus on db postgres
+2026-10-16 02:04:39,761 35256 INFO doctorplagio_odoo odoo.addons.bus.bus_dispatcher: Bus: starting 1 dispatch workers
+2026-10-16 02:04:41,157 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:41] "GET /web/service-worker.js HTTP/1.1" 200 7972 2 0.031 0.167 rw
+2026-10-16 02:04:42,768 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:42] "GET /web/webclient/translations?hash=89a9ef20d8c0982de333a6367d9154ed33e91451&lang=es_DO HTTP/1.1" 200 69 3 0.02 4.574 rw
+2026-10-16 02:04:42,799 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:42] "POST /web/dataset/call_kw/ir.module.module/web_search_read#ir.module.module.web_search_read HTTP/1.1" 200 18569 3 0.037 3.921 rw
+2026-10-16 02:05:23,114 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:23] "POST /web/dataset/call_kw/ir.module.module/web_search_read#ir.module.module.web_search_read HTTP/1.1" 200 375 3 0.016 0.037 rw
+2026-10-16 02:05:23,119 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:23] "POST /web/dataset/call_kw/ir.module.module/web_search_read#ir.module.module.web_search_read HTTP/1.1" 200 375 3 0.022 0.038 rw
+2026-10-16 02:05:23,243 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:23] "POST /web/dataset/call_kw/ir.module.module/search_panel_select_range#ir.module.module.search_panel_select_range HTTP/1.1" 200 827 43 0.081 0.104 rw
+2026-10-16 02:05:26,209 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: ALLOW access to module.button_immediate_upgrade on ['DoctorPlagio'] to user info@contoso.com #2 via 127.0.0.1
+2026-10-16 02:05:26,218 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: ALLOW access to module.button_upgrade on ['DoctorPlagio'] to user info@contoso.com #2 via 127.0.0.1
+2026-10-16 02:05:26,219 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: ALLOW access to module.update_list on ['DoctorPlagio'] to user info@contoso.com #2 via 127.0.0.1
+2026-10-16 02:05:31,100 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: ALLOW access to module.button_install on [] to user info@contoso.com #2 via 127.0.0.1
+2026-10-16 02:05:32,692 35256 INFO doctorplagio_odoo odoo.registry: Caches invalidated, signaling through the database: ['default', 'stable']
+2026-10-16 02:05:32,827 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 1 modules...
+2026-10-16 02:05:32,851 35256 INFO doctorplagio_odoo odoo.modules.loading: 1 modules loaded in 0.02s, 0 queries (+0 extra)
+2026-10-16 02:05:32,973 35256 INFO doctorplagio_odoo odoo.modules.loading: updating modules list
+2026-10-16 02:05:32,985 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: ALLOW access to module.update_list on [] to user __system__ #1 via n/a
+2026-10-16 02:05:33,326 35256 WARNING doctorplagio_odoo odoo.addons.base.models.ir_cron: Skipping database doctorplagio_odoo because of modules to install/upgrade/remove.
+2026-10-16 02:05:34,446 35256 WARNING doctorplagio_odoo odoo.addons.base.models.ir_cron: Skipping database doctorplagio_odoo because of modules to install/upgrade/remove.
+2026-10-16 02:05:36,217 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 17 modules...
+2026-10-16 02:05:36,218 35256 INFO doctorplagio_odoo odoo.modules.loading: Loading module doctorplagio (3/17)
+2026-10-16 02:05:36,252 35256 INFO doctorplagio_odoo odoo.registry: module doctorplagio: creating or updating database tables
+2026-10-16 02:05:36,514 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/security/access.xml
+2026-10-16 02:05:36,568 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/security/dashboard_access.xml
+2026-10-16 02:05:36,595 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/data/ir_cron.xml
+2026-10-16 02:05:36,698 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/data/doctorplagio_dashboard_data.xml
+2026-10-16 02:05:36,712 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/views/document_views.xml
+2026-10-16 02:05:36,860 35256 WARNING doctorplagio_odoo py.warnings: C:\PROYECTO\DoctorPlagio\Odoo\odoo\modules\module.py:418: DeprecationWarning: os.path.commonprefix() is deprecated. Use os.path.commonpath() for longest path prefix.
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\threading.py", line 1180, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\threading.py", line 1218, in _bootstrap_inner
+    self._context.run(self.run)
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\threading.py", line 1160, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\concurrent\futures\thread.py", line 119, in _worker
+    work_item.run(ctx)
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\rluciano\AppData\Local\Programs\Python\Python315\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\service\server.py", line 448, in http_client_thread
+    http_socket.process_request()
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\server.py", line 254, in process_request
+    wsgi_response = root(wsgi_environ, self.start_response)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\router.py", line 279, in __call__
+    response = serve_db(request)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\router.py", line 446, in serve_db
+    return retrying(serve_func, env=request.env)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\retrying.py", line 56, in retrying
+    result = func()
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\router.py", line 593, in serve_ir_http
+    response = request.dispatcher.dispatch(rule.endpoint, args)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\dispatcher.py", line 371, in dispatch
+    result = self.request.registry['ir.http']._dispatch(endpoint)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_http.py", line 481, in _dispatch
+    result = endpoint(**request.params)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\http\routing_map.py", line 218, in route_wrapper
+    result = endpoint(self, *args, **params_ok)
+  File "c:\proyecto\doctorplagio\odoo\addons\web\controllers\dataset.py", line 38, in call_button
+    action = call_kw(request.env[model], method, args, kwargs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\service\model.py", line 59, in call_kw
+    result = method(recs, *args, **kwargs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_module.py", line 75, in check_and_log
+    return method(self, *args, **kwargs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_module.py", line 709, in button_immediate_upgrade
+    return self._button_immediate_function(self.env.registry[self._name].button_upgrade)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_module.py", line 646, in _button_immediate_function
+    modules.registry.Registry.new(self.env.cr.dbname, update_module=True)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\func.py", line 67, in locked
+    return func(inst, *args, **kwargs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\registry.py", line 230, in new
+    contextvars.Context().run(
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\modules\loading.py", line 449, in load_modules
+    load_module_graph(
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\modules\loading.py", line 218, in load_module_graph
+    load_data(env, idref, mode, kind='data', package=package)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\modules\loading.py", line 56, in load_data
+    convert_file(env, package.name, filename, idref, mode, noupdate=kind == 'demo')
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\convert.py", line 718, in convert_file
+    convert_xml_import(env, module, fp, idref, mode, noupdate)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\convert.py", line 817, in convert_xml_import
+    obj.parse(doc.getroot())
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\convert.py", line 688, in parse
+    self._tag_root(de)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\convert.py", line 630, in _tag_root
+    f(rec)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\convert.py", line 482, in _tag_record
+    record = model._load_records([data], self.mode == 'update')
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\models.py", line 4684, in _load_records
+    data['record']._load_records_write(data['values'])
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_ui_view.py", line 2697, in _load_records_write
+    super()._load_records_write(values)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\models.py", line 4605, in _load_records_write
+    self.write(values)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_ui_view.py", line 671, in write
+    res = super().write(self._compute_defaults(vals))
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\models.py", line 3967, in write
+    fields[0].determine_inverse(real_recs)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\fields.py", line 2109, in determine_inverse
+    determine(self.inverse, records)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\orm\fields.py", line 82, in determine
+    return needle(*args)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_ui_view.py", line 268, in _inverse_arch
+    path_info = get_resource_from_path(self.env.context['install_filename'])
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\modules\module.py", line 418, in get_resource_from_path
+    if os.path.commonprefix([adpath, path]) == adpath:
+
+2026-10-16 02:05:37,045 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/views/dashboard_views.xml
+2026-10-16 02:05:37,177 35256 INFO doctorplagio_odoo odoo.modules.loading: loading doctorplagio/views/res_config_settings_views.xml
+2026-10-16 02:05:37,318 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: module doctorplagio: no translation for language es_DO
+2026-10-16 02:05:37,340 35256 INFO doctorplagio_odoo odoo.registry: Registry changed, signaling through the database
+2026-10-16 02:05:37,401 35256 INFO doctorplagio_odoo odoo.modules.loading: Module doctorplagio loaded in 1.18s, 172 queries (+172 other)
+2026-10-16 02:05:37,440 35256 INFO doctorplagio_odoo odoo.modules.loading: 17 modules loaded in 1.22s, 172 queries (+172 extra)
+2026-10-16 02:05:38,069 35256 INFO doctorplagio_odoo odoo.registry: verifying fields for every extended model
+2026-10-16 02:05:39,177 35256 INFO doctorplagio_odoo odoo.modules.loading: Modules loaded.
+2026-10-16 02:05:39,194 35256 INFO doctorplagio_odoo odoo.registry: Registry changed, signaling through the database
+2026-10-16 02:05:39,245 35256 INFO doctorplagio_odoo odoo.registry: Registry loaded in 6.495s
+2026-10-16 02:05:39,250 35256 INFO doctorplagio_odoo odoo.registry: Reloading the model registry after database signaling.
+2026-10-16 02:05:39,272 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 1 modules...
+2026-10-16 02:05:39,291 35256 INFO doctorplagio_odoo odoo.modules.loading: 1 modules loaded in 0.02s, 0 queries (+0 extra)
+2026-10-16 02:05:39,294 35256 INFO doctorplagio_odoo odoo.modules.loading: loading 17 modules...
+2026-10-16 02:05:39,327 35256 INFO doctorplagio_odoo odoo.modules.loading: 17 modules loaded in 0.03s, 0 queries (+0 extra)
+2026-10-16 02:05:39,503 35256 INFO doctorplagio_odoo odoo.modules.loading: Modules loaded.
+2026-10-16 02:05:39,528 35256 INFO doctorplagio_odoo odoo.registry: Registry loaded in 0.278s
+2026-10-16 02:05:39,529 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_module: getting next ir.actions.todo()
+2026-10-16 02:05:39,610 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:39] "POST /web/dataset/call_button/ir.module.module/button_immediate_upgrade#ir.module.module.button_immediate_upgrade HTTP/1.1" 200 103 811 2.495 10.958 rw
+2026-10-16 02:05:39,729 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_http: Generating routing map for key None
+2026-10-16 02:05:42,940 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:42] "GET /odoo HTTP/1.1" 200 4360 81 0.117 3.106 rw
+2026-10-16 02:05:42,993 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:04:39] "GET /websocket?version=saas-19.5-1 HTTP/1.1" 101 0 8 0.123 63.967 rw
+2026-10-16 02:05:43,253 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "GET /web/webclient/load_menus HTTP/1.1" 200 24225 17 0.036 0.151 rw
+2026-10-16 02:05:43,342 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "GET /web/manifest.webmanifest HTTP/1.1" 200 386 12 0.159 0.057 rw
+2026-10-16 02:05:43,346 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "GET /web/webclient/translations?hash=&lang=es_DO HTTP/1.1" 200 273458 3 0.013 0.2 rw
+2026-10-16 02:05:43,520 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "GET /bus/websocket_worker_bundle?v=saas-19.5-1 HTTP/1.1" 304 0 5 0.021 0.02 rw
+2026-10-16 02:05:43,643 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "GET /web/image?model=res.users&field=avatar_128&id=2 HTTP/1.1" 304 0 7 0.05 0.035 rw
+2026-10-16 02:05:43,677 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "POST /web/action/load HTTP/1.1" 200 638 10 0.063 0.058 rw
+2026-10-16 02:05:43,824 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "POST /web/dataset/call_kw/doctorplagio.dashboard/get_views#doctorplagio.dashboard.get_views HTTP/1.1" 200 6447 10 0.023 0.082 rw
+2026-10-16 02:05:43,954 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:43] "POST /web/dataset/call_kw/doctorplagio.dashboard/web_read#doctorplagio.dashboard.web_read HTTP/1.1" 200 221 8 0.022 0.041 rw
+2026-10-16 02:05:44,912 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:05:44] "GET /web/service-worker.js HTTP/1.1" 200 7972 2 0.007 0.011 rw
+2026-10-16 02:06:20,788 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:20] "POST /web/dataset/call_button/doctorplagio.dashboard/action_open_draft#doctorplagio.dashboard.action_open_draft HTTP/1.1" 200 261 2 0.007 0.034 rw
+2026-10-16 02:06:21,051 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:21] "POST /web/dataset/call_kw/doctorplagio.document/get_views#doctorplagio.document.get_views HTTP/1.1" 200 11796 18 0.104 0.09 rw
+2026-10-16 02:06:21,116 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:21] "POST /web/dataset/call_kw/doctorplagio.document/web_search_read#doctorplagio.document.web_search_read HTTP/1.1" 200 67 3 0.01 0.029 rw
+2026-10-16 02:06:23,047 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:23] "POST /web/dataset/call_kw/doctorplagio.dashboard/web_read#doctorplagio.dashboard.web_read HTTP/1.1" 200 221 8 0.015 0.041 rw
+2026-10-16 02:06:24,426 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:24] "POST /web/dataset/call_button/doctorplagio.dashboard/action_open_done#doctorplagio.dashboard.action_open_done HTTP/1.1" 200 260 2 0.007 0.036 rw
+2026-10-16 02:06:24,546 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:06:24] "POST /web/dataset/call_kw/doctorplagio.document/web_search_read#doctorplagio.document.web_search_read HTTP/1.1" 200 356 3 0.008 0.028 rw
+2026-10-16 02:06:33,515 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:06:33,590 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.08s)
+2026-10-16 02:07:33,776 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) starting
+2026-10-16 02:07:34,178 35256 INFO doctorplagio_odoo odoo.addons.base.models.res_users: GC'd 0 user log entries
+2026-10-16 02:07:34,416 35256 ERROR doctorplagio_odoo odoo.addons.base.models.ir_autovacuum: Failed ir.attachment()._gc_file_store()
+Traceback (most recent call last):
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_autovacuum.py", line 49, in _run_vacuum_cleaner
+    result = func(model)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_attachment.py", line 259, in _gc_file_store
+    self._gc_file_store_unsafe(grace_period=max(GC_GRACE_PERIOD, min((grace_db or 0) * 2, GC_GRACE_PERIOD_MAX)))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_attachment.py", line 307, in _gc_file_store_unsafe
+    for name_pairs in split_every(IN_MAX, files_to_gc()):
+                      ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\tools\misc.py", line 640, in split_every
+    piece = piece_maker(islice(iterator, n))
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_attachment.py", line 286, in files_to_gc
+    full_path = self._full_path(fname)
+  File "C:\PROYECTO\DoctorPlagio\Odoo\odoo\addons\base\models\ir_attachment.py", line 134, in _full_path
+    assert not path.endswith(GC_FILE_SUFFIX)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+2026-10-16 02:07:34,465 35256 INFO doctorplagio_odoo odoo.addons.api_doc.models.ir_attachment: GC'd 0 /doc cached index
+2026-10-16 02:07:34,525 35256 INFO doctorplagio_odoo odoo.addons.base.models.res_users: GC 'auth_totp.device' delete 0 entries
+2026-10-16 02:07:34,607 35256 INFO doctorplagio_odoo odoo.addons.base.models.res_device: GC device logs delete 0 entries
+2026-10-16 02:07:34,634 35256 INFO doctorplagio_odoo odoo.addons.base.models.res_users: GC 'res.users.apikeys' delete 0 entries
+2026-10-16 02:07:34,716 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) fully done (#loop 1; done 0; remaining 0; duration 0.94s)
+2026-10-16 02:07:34,736 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:07:34,780 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.05s)
+2026-10-16 02:08:27,903 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:08:27] "POST /web/dataset/call_kw/doctorplagio.dashboard/web_read#doctorplagio.dashboard.web_read HTTP/1.1" 200 221 8 0.012 0.045 rw
+2026-10-16 02:08:34,945 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:08:34,989 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.05s)
+2026-10-16 02:08:52,568 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:08:52] "POST /web/dataset/call_button/doctorplagio.dashboard/action_open_done#doctorplagio.dashboard.action_open_done HTTP/1.1" 200 261 2 0.007 0.039 rw
+2026-10-16 02:08:52,671 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:08:52] "POST /web/dataset/call_kw/doctorplagio.document/web_search_read#doctorplagio.document.web_search_read HTTP/1.1" 200 357 3 0.01 0.028 rw
+2026-10-16 02:08:54,620 35256 INFO doctorplagio_odoo odoo.http.server: 127.0.0.1 _Tuz2rw8 - [16/Oct/2026 02:08:54] "POST /web/dataset/call_kw/doctorplagio.document/web_read#doctorplagio.document.web_read HTTP/1.1" 200 68198 4 0.012 0.041 rw
+2026-10-16 02:09:35,152 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) starting
+2026-10-16 02:09:35,199 35256 INFO doctorplagio_odoo odoo.addons.base.models.ir_cron: Job 'DoctorPlagio: procesar cola de análisis' (3) fully done (#loop 1; done 0; remaining 0; duration 0.05s)

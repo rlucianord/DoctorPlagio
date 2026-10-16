@@ -8,7 +8,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>Panel de control DoctorPlagio</h1>
-                        <div class="text-muted">Resumen de los documentos registrados en Odoo.</div>
+                        <div class="text-muted">Resumen de los documentos registrados en el Sistema.</div>
                     </div>
 
                     <div class="row g-3 mt-3 mb-4">
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="alert alert-info" role="alert">
-                        <strong>Nota operativa:</strong> los contadores reflejan los documentos almacenados en Odoo.
+                        <strong>Nota operativa:</strong> los contadores reflejan los documentos almacenados el Sistema.
                         Seleccione una tarjeta para abrir los documentos correspondientes. Si el servicio externo
                         termina el análisis pero el documento sigue en cola, revise el trabajo de análisis y los
                         registros del conector.
